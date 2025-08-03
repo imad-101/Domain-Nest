@@ -1,6 +1,5 @@
 import authConfig from "@/auth.config";
 import { PrismaAdapter } from "@auth/prisma-adapter";
-import { UserRole } from "@prisma/client";
 import NextAuth, { type DefaultSession } from "next-auth";
 
 import { prisma } from "@/lib/db";
@@ -10,7 +9,6 @@ import { getUserById } from "@/lib/user";
 declare module "next-auth" {
   interface Session {
     user: {
-      role: UserRole;
     } & DefaultSession["user"];
   }
 }
@@ -36,10 +34,6 @@ export const {
           session.user.email = token.email;
         }
 
-        if (token.role) {
-          session.user.role = token.role;
-        }
-
         session.user.name = token.name;
         session.user.image = token.picture;
       }
@@ -57,7 +51,6 @@ export const {
       token.name = dbUser.name;
       token.email = dbUser.email;
       token.picture = dbUser.image;
-      token.role = dbUser.role;
 
       return token;
     },

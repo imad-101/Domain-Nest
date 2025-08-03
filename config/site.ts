@@ -4,16 +4,16 @@ import { env } from "@/env.mjs";
 const site_url = env.NEXT_PUBLIC_APP_URL;
 
 export const siteConfig: SiteConfig = {
-  name: "SaaS Starter",
+  name: "Domain Nest",
   description:
-    "Get your project off to an explosive start with SaaS Starter! Harness the power of Next.js 14, Prisma, Neon, Auth.js v5, Resend, React Email, Shadcn/ui and Stripe to build your next big thing.",
+    "Professional domain management platform with DNS monitoring, SSL certificates, domain transfers, and comprehensive analytics. Keep your online presence secure and optimized.",
   url: site_url,
   ogImage: `${site_url}/_static/og.jpg`,
   links: {
-    twitter: "https://twitter.com/miickasmt",
-    github: "https://github.com/mickasmt/next-saas-stripe-starter",
+    twitter: "https://twitter.com/domainnest",
+    github: "https://github.com/domainnest",
   },
-  mailSupport: "support@saas-starter.com",
+  mailSupport: "support@domnest.app",
 };
 
 export const footerLinks: SidebarNavItem[] = [
@@ -29,19 +29,19 @@ export const footerLinks: SidebarNavItem[] = [
   {
     title: "Product",
     items: [
-      { title: "Security", href: "#" },
-      { title: "Customization", href: "#" },
-      { title: "Customers", href: "#" },
-      { title: "Changelog", href: "#" },
+      { title: "DNS Management", href: "#" },
+      { title: "SSL Monitoring", href: "#" },
+      { title: "Domain Transfer", href: "#" },
+      { title: "Uptime Monitoring", href: "#" },
     ],
   },
   {
-    title: "Docs",
+    title: "Support",
     items: [
-      { title: "Introduction", href: "#" },
-      { title: "Installation", href: "#" },
-      { title: "Components", href: "#" },
-      { title: "Code Blocks", href: "#" },
+      { title: "Help Center", href: "#" },
+      { title: "API Reference", href: "#" },
+      { title: "Status Page", href: "#" },
+      { title: "Contact", href: "#" },
     ],
   },
 ];
