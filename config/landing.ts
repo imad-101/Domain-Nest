@@ -2,26 +2,26 @@ import { FeatureLdg, InfoLdg, TestimonialType } from "types";
 
 export const infos: InfoLdg[] = [
   {
-    title: "Empower your projects",
+    title: "Professional Domain Management",
     description:
-      "Unlock the full potential of your projects with our open-source SaaS platform. Collaborate seamlessly, innovate effortlessly, and scale limitlessly.",
+      "Take control of your online presence with our comprehensive domain management platform. Monitor DNS health, manage SSL certificates, and track domain performance all in one place.",
     image: "/_static/illustrations/work-from-home.jpg",
     list: [
       {
-        title: "Collaborative",
-        description: "Work together with your team members in real-time.",
-        icon: "laptop",
-      },
-      {
-        title: "Innovative",
-        description: "Stay ahead of the curve with access constant updates.",
-        icon: "settings",
-      },
-      {
-        title: "Scalable",
-        description:
-          "Our platform offers the scalability needed to adapt to your needs.",
+        title: "DNS Monitoring",
+        description: "Real-time monitoring of your DNS records and propagation status.",
         icon: "search",
+      },
+      {
+        title: "SSL Management",
+        description: "Automated SSL certificate management and renewal notifications.",
+        icon: "check",
+      },
+      {
+        title: "Domain Analytics",
+        description:
+          "Comprehensive analytics and insights for your domain performance.",
+        icon: "lineChart",
       },
     ],
   },
@@ -45,7 +45,7 @@ export const infos: InfoLdg[] = [
       {
         title: "Reliable",
         description:
-          "Rely on our robust infrastructure and comprehensive documentation.",
+          "Rely on our robust infrastructure and 24/7 support.",
         icon: "settings",
       },
     ],
@@ -54,97 +54,97 @@ export const infos: InfoLdg[] = [
 
 export const features: FeatureLdg[] = [
   {
-    title: "Feature 1",
+    title: "DNS Management",
     description:
-      "Amet praesentium deserunt ex commodi tempore fuga voluptatem. Sit, sapiente.",
-    link: "/",
-    icon: "nextjs",
+      "Easily manage your DNS records with our intuitive interface. Add, edit, and monitor A, CNAME, MX, and TXT records.",
+    link: "/dashboard",
+    icon: "search",
   },
   {
-    title: "Feature 2",
+    title: "SSL Certificate Monitoring",
     description:
-      "Amet praesentium deserunt ex commodi tempore fuga voluptatem. Sit, sapiente.",
-    link: "/",
-    icon: "google",
+      "Automatically monitor SSL certificate expiration dates and receive timely renewal notifications to keep your sites secure.",
+    link: "/dashboard",
+    icon: "check",
   },
   {
-    title: "Feature 3",
+    title: "Domain Transfer",
     description:
-      "Amet praesentium deserunt ex commodi tempore fuga voluptatem. Sit, sapiente.",
-    link: "/",
-    icon: "gitHub",
+      "Streamlined domain transfer process with step-by-step guidance and real-time status tracking.",
+    link: "/dashboard",
+    icon: "arrowRight",
   },
   {
-    title: "Feature 4",
+    title: "Uptime Monitoring",
     description:
-      "Amet praesentium deserunt ex commodi tempore fuga voluptatem. Sit, sapiente.",
-    link: "/",
-    icon: "laptop",
+      "Monitor your domain's uptime and performance with detailed analytics and instant alerts when issues arise.",
+    link: "/dashboard",
+    icon: "lineChart",
   },
   {
-    title: "Feature 5",
+    title: "WHOIS Lookup",
     description:
-      "Amet praesentium deserunt ex commodi tempore fuga voluptatem. Sit, sapiente.",
-    link: "/",
+      "Quick and comprehensive WHOIS information lookup for any domain with detailed registration and ownership data.",
+    link: "/dashboard",
     icon: "user",
   },
   {
-    title: "Feature 6",
+    title: "Bulk Operations",
     description:
-      "Amet praesentium deserunt ex commodi tempore fuga voluptatem. Sit, sapiente.",
-    link: "/",
+      "Manage multiple domains efficiently with bulk DNS updates, certificate renewals, and domain transfers.",
+    link: "/dashboard",
     icon: "copy",
   },
 ];
 
 export const testimonials: TestimonialType[] = [
   {
-    name: "John Doe",
-    job: "Full Stack Developer",
-    image: "https://randomuser.me/api/portraits/men/1.jpg",
-    review:
-      "The next-saas-stripe-starter repo has truly revolutionized my development workflow. With its comprehensive features and seamless integration with Stripe, I've been able to build and deploy projects faster than ever before. The documentation is clear and concise, making it easy to navigate through the setup process. I highly recommend next-saas-stripe-starter to any developer.",
-  },
-  {
-    name: "Alice Smith",
-    job: "UI/UX Designer",
-    image: "https://randomuser.me/api/portraits/women/2.jpg",
-    review:
-      "Thanks to next-saas-stripe-starter, I've been able to create modern and attractive user interfaces in record time. The starter kit provides a solid foundation for building sleek and intuitive designs, allowing me to focus more on the creative aspects of my work.",
-  },
-  {
-    name: "David Johnson",
+    name: "Sarah Chen",
     job: "DevOps Engineer",
-    image: "https://randomuser.me/api/portraits/men/3.jpg",
+    image: "https://randomuser.me/api/portraits/women/1.jpg",
     review:
-      "Thanks to next-saas-stripe-starter, I was able to streamline the entire process and get payments up and running in no time. ",
+      "Domain Nest has completely transformed how we handle our infrastructure. The DNS management is intuitive, and the SSL monitoring has saved us from multiple certificate expiration issues. The bulk operations feature is a game-changer for managing our 50+ domains.",
   },
   {
-    name: "Michael Wilson",
-    job: "Project Manager",
-    image: "https://randomuser.me/api/portraits/men/5.jpg",
+    name: "Marcus Rodriguez",
+    job: "Web Developer",
+    image: "https://randomuser.me/api/portraits/men/2.jpg",
     review:
-      "I'm impressed by the quality of code and clear documentation of next-saas-stripe-starter. Kudos to the team!",
+      "As a freelance developer managing multiple client domains, this platform has been invaluable. The uptime monitoring alerts me immediately when there are issues, and the WHOIS lookup feature saves me so much time. Highly recommended!",
   },
   {
-    name: "Sophia Garcia",
-    job: "Data Analyst",
-    image: "https://randomuser.me/api/portraits/women/6.jpg",
+    name: "Jennifer Kim",
+    job: "IT Manager",
+    image: "https://randomuser.me/api/portraits/women/3.jpg",
     review:
-      "next-saas-stripe-starter provided me with the tools I needed to efficiently manage user data. Thank you so much!",
+      "Managing our company's domain portfolio used to be a nightmare. Now with this platform, everything is centralized and automated. The domain transfer process was incredibly smooth, and the analytics help us make informed decisions.",
   },
   {
-    name: "Emily Brown",
-    job: "Marketing Manager",
-    image: "https://randomuser.me/api/portraits/women/4.jpg",
+    name: "Alex Thompson",
+    job: "System Administrator",
+    image: "https://randomuser.me/api/portraits/men/4.jpg",
     review:
-      "next-saas-stripe-starter has been an invaluable asset in my role as a marketing manager. With its seamless integration with Stripe, I've been able to launch targeted marketing campaigns with built-in payment functionality, allowing us to monetize our products and services more effectively.",
+      "The SSL certificate monitoring feature alone is worth the subscription. We never miss a renewal deadline anymore, and the dashboard gives us complete visibility into our domain health. Excellent platform!",
   },
   {
-    name: "Jason Stan",
-    job: "Web Designer",
-    image: "https://randomuser.me/api/portraits/men/9.jpg",
+    name: "Lisa Wang",
+    job: "Digital Marketing Manager",
+    image: "https://randomuser.me/api/portraits/women/5.jpg",
     review:
-      "Thanks to next-saas-stripe-starter, I've been able to create modern and attractive user interfaces in record time. The starter kit provides a solid foundation for building sleek and intuitive designs, allowing me to focus more on the creative aspects of my work.",
+      "Domain Nest has streamlined our entire online presence management. The bulk operations feature lets us update multiple domains simultaneously, and the uptime monitoring ensures our marketing campaigns never suffer from downtime.",
+  },
+  {
+    name: "David Park",
+    job: "Startup Founder",
+    image: "https://randomuser.me/api/portraits/men/6.jpg",
+    review:
+      "As a startup, we needed a cost-effective solution to manage our domains professionally. This platform delivers enterprise-level features at an affordable price. The interface is clean and the support is excellent.",
+  },
+  {
+    name: "Rachel Green",
+    job: "Agency Owner",
+    image: "https://randomuser.me/api/portraits/women/7.jpg",
+    review:
+      "Managing domains for multiple clients used to be chaotic. This platform has given us the tools to provide professional domain management services. The client dashboard features are perfect for our agency workflow.",
   },
 ];

@@ -2,6 +2,7 @@
 
 import { Fragment, useEffect, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { NavItem, SidebarNavItem } from "@/types";
 import { Menu, PanelLeftClose, PanelRightClose } from "lucide-react";
@@ -19,9 +20,9 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import ProjectSwitcher from "@/components/dashboard/project-switcher";
 import { UpgradeCard } from "@/components/dashboard/upgrade-card";
 import { Icons } from "@/components/shared/icons";
+import { SupportModal } from "@/components/modals/support-modal";
 
 interface DashboardSidebarProps {
   links: SidebarNavItem[];
@@ -29,6 +30,7 @@ interface DashboardSidebarProps {
 
 export function DashboardSidebar({ links }: DashboardSidebarProps) {
   const path = usePathname();
+  const [supportModalOpen, setSupportModalOpen] = useState(false);
 
   // NOTE: Use this if you want save in local storage -- Credits: Hosna Qasmei
   //
@@ -72,7 +74,28 @@ export function DashboardSidebar({ links }: DashboardSidebarProps) {
           >
             <div className="flex h-full max-h-screen flex-1 flex-col gap-2">
               <div className="flex h-14 items-center p-4 lg:h-[60px]">
-                {isSidebarExpanded ? <ProjectSwitcher /> : null}
+                {isSidebarExpanded ? (
+                  <Link href="/dashboard" className="flex items-center gap-2">
+                    <Image
+                      src="/logo.png"
+                      alt="Logo"
+                      width={28}
+                      height={28}
+                      className="h-7 w-7"
+                    />
+                    <span className="font-semibold">Domain Nest</span>
+                  </Link>
+                ) : (
+                  <Link href="/dashboard" className="flex items-center justify-center w-full">
+                    <Image
+                      src="/logo.png"
+                      alt="Logo"
+                      width={28}
+                      height={28}
+                      className="h-7 w-7"
+                    />
+                  </Link>
+                )}
 
                 <Button
                   variant="ghost"
@@ -110,6 +133,51 @@ export function DashboardSidebar({ links }: DashboardSidebarProps) {
                     )}
                     {section.items.map((item) => {
                       const Icon = Icons[item.icon || "arrowRight"];
+                      
+                      // Handle support button specially
+                      if (item.href === "#" && item.title === "Support") {
+                        return (
+                          <Fragment key={`link-fragment-${item.title}`}>
+                            {isSidebarExpanded ? (
+                              <button
+                                key={`link-${item.title}`}
+                                onClick={() => setSupportModalOpen(true)}
+                                className={cn(
+                                  "flex items-center gap-3 rounded-md p-2 text-sm font-medium hover:bg-muted text-muted-foreground hover:text-accent-foreground w-full text-left"
+                                )}
+                              >
+                                <Icon className="size-5" />
+                                {item.title}
+                                {item.badge && (
+                                  <Badge className="ml-auto flex size-5 shrink-0 items-center justify-center rounded-full">
+                                    {item.badge}
+                                  </Badge>
+                                )}
+                              </button>
+                            ) : (
+                              <Tooltip key={`tooltip-${item.title}`}>
+                                <TooltipTrigger asChild>
+                                  <button
+                                    key={`link-tooltip-${item.title}`}
+                                    onClick={() => setSupportModalOpen(true)}
+                                    className={cn(
+                                      "flex items-center gap-3 rounded-md py-2 text-sm font-medium hover:bg-muted text-muted-foreground hover:text-accent-foreground w-full"
+                                    )}
+                                  >
+                                    <span className="flex size-full items-center justify-center">
+                                      <Icon className="size-5" />
+                                    </span>
+                                  </button>
+                                </TooltipTrigger>
+                                <TooltipContent side="right">
+                                  {item.title}
+                                </TooltipContent>
+                              </Tooltip>
+                            )}
+                          </Fragment>
+                        );
+                      }
+
                       return (
                         item.href && (
                           <Fragment key={`link-fragment-${item.title}`}>
@@ -173,6 +241,10 @@ export function DashboardSidebar({ links }: DashboardSidebarProps) {
             </div>
           </aside>
         </ScrollArea>
+        <SupportModal 
+          open={supportModalOpen} 
+          onOpenChange={setSupportModalOpen} 
+        />
       </div>
     </TooltipProvider>
   );
@@ -181,6 +253,7 @@ export function DashboardSidebar({ links }: DashboardSidebarProps) {
 export function MobileSheetSidebar({ links }: DashboardSidebarProps) {
   const path = usePathname();
   const [open, setOpen] = useState(false);
+  const [supportModalOpen, setSupportModalOpen] = useState(false);
   const { isSm, isMobile } = useMediaQuery();
 
   if (isSm || isMobile) {
@@ -201,16 +274,18 @@ export function MobileSheetSidebar({ links }: DashboardSidebarProps) {
             <div className="flex h-screen flex-col">
               <nav className="flex flex-1 flex-col gap-y-8 p-6 text-lg font-medium">
                 <Link
-                  href="#"
+                  href="/dashboard"
                   className="flex items-center gap-2 text-lg font-semibold"
                 >
-                  <Icons.logo className="size-6" />
-                  <span className="font-urban text-xl font-bold">
-                    {siteConfig.name}
-                  </span>
+                  <Image
+                    src="/logo.png"
+                    alt="Logo"
+                    width={28}
+                    height={28}
+                    className="h-7 w-7"
+                  />
+                  <span className="font-semibold">Domain Nest</span>
                 </Link>
-
-                <ProjectSwitcher large />
 
                 {links.map((section) => (
                   <section
@@ -223,6 +298,33 @@ export function MobileSheetSidebar({ links }: DashboardSidebarProps) {
 
                     {section.items.map((item) => {
                       const Icon = Icons[item.icon || "arrowRight"];
+                      
+                      // Handle support button specially
+                      if (item.href === "#" && item.title === "Support") {
+                        return (
+                          <Fragment key={`link-fragment-${item.title}`}>
+                            <button
+                              key={`link-${item.title}`}
+                              onClick={() => {
+                                setSupportModalOpen(true);
+                                setOpen(false);
+                              }}
+                              className={cn(
+                                "flex items-center gap-3 rounded-md p-2 text-sm font-medium hover:bg-muted text-muted-foreground hover:text-accent-foreground w-full text-left"
+                              )}
+                            >
+                              <Icon className="size-5" />
+                              {item.title}
+                              {item.badge && (
+                                <Badge className="ml-auto flex size-5 shrink-0 items-center justify-center rounded-full">
+                                  {item.badge}
+                                </Badge>
+                              )}
+                            </button>
+                          </Fragment>
+                        );
+                      }
+
                       return (
                         item.href && (
                           <Fragment key={`link-fragment-${item.title}`}>
@@ -262,6 +364,10 @@ export function MobileSheetSidebar({ links }: DashboardSidebarProps) {
               </nav>
             </div>
           </ScrollArea>
+          <SupportModal 
+            open={supportModalOpen} 
+            onOpenChange={setSupportModalOpen} 
+          />
         </SheetContent>
       </Sheet>
     );

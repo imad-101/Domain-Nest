@@ -21,7 +21,6 @@ export type NavItem = {
   badge?: number;
   disabled?: boolean;
   external?: boolean;
-  authorizeOnly?: UserRole;
   icon?: keyof typeof Icons;
 };
 
@@ -34,14 +33,10 @@ export type MarketingConfig = {
 export type SidebarNavItem = {
   title: string;
   items: NavItem[];
-  authorizeOnly?: UserRole;
   icon?: keyof typeof Icons;
 };
 
-export type DocsConfig = {
-  mainNav: MainNavItem[];
-  sidebarNav: SidebarNavItem[];
-};
+
 
 // subcriptions
 export type SubscriptionPlan = {

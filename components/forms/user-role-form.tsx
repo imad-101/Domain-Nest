@@ -3,7 +3,7 @@
 import { useState, useTransition } from "react";
 import { updateUserRole, type FormData } from "@/actions/update-user-role";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { User, UserRole } from "@prisma/client";
+import { User } from "@prisma/client";
 import { useSession } from "next-auth/react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -11,6 +11,14 @@ import { z } from "zod";
 
 import { userRoleSchema } from "@/lib/validations/user";
 import { Button } from "@/components/ui/button";
+
+// Define UserRole for SQLite compatibility
+const UserRole = {
+  ADMIN: "ADMIN",
+  USER: "USER"
+} as const;
+
+type UserRole = typeof UserRole[keyof typeof UserRole];
 import {
   Form,
   FormControl,
@@ -45,7 +53,7 @@ export function UserRoleForm({ user }: UserNameFormProps) {
   const form = useForm<FormData>({
     resolver: zodResolver(userRoleSchema),
     values: {
-      role: role,
+      role: role as "ADMIN" | "USER",
     },
   });
 
@@ -96,7 +104,7 @@ export function UserRoleForm({ user }: UserNameFormProps) {
                     </FormControl>
                     <SelectContent>
                       {roles.map((role) => (
-                        <SelectItem key={role} value={role.toString()}>
+                        <SelectItem key={role} value={role}>
                           {role}
                         </SelectItem>
                       ))}

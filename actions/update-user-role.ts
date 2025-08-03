@@ -2,10 +2,17 @@
 
 import { revalidatePath } from "next/cache";
 import { auth } from "@/auth";
-import { UserRole } from "@prisma/client";
 
 import { prisma } from "@/lib/db";
 import { userRoleSchema } from "@/lib/validations/user";
+
+// Define UserRole for SQLite compatibility
+const UserRole = {
+  ADMIN: "ADMIN",
+  USER: "USER"
+} as const;
+
+type UserRole = typeof UserRole[keyof typeof UserRole];
 
 export type FormData = {
   role: UserRole;

@@ -1,8 +1,8 @@
 import { redirect } from "next/navigation";
+import Image from "next/image";
 
 import { sidebarLinks } from "@/config/dashboard";
 import { getCurrentUser } from "@/lib/session";
-import { SearchCommand } from "@/components/dashboard/search-command";
 import {
   DashboardSidebar,
   MobileSheetSidebar,
@@ -20,24 +20,31 @@ export default async function Dashboard({ children }: ProtectedLayoutProps) {
 
   if (!user) redirect("/login");
 
-  const filteredLinks = sidebarLinks.map((section) => ({
-    ...section,
-    items: section.items.filter(
-      ({ authorizeOnly }) => !authorizeOnly || authorizeOnly === user.role,
-    ),
-  }));
-
   return (
     <div className="relative flex min-h-screen w-full">
-      <DashboardSidebar links={filteredLinks} />
+      <DashboardSidebar links={sidebarLinks} />
 
       <div className="flex flex-1 flex-col">
-        <header className="sticky top-0 z-50 flex h-14 bg-background px-4 lg:h-[60px] xl:px-8">
+        <header className="sticky top-0 z-50 flex h-14 bg-background border-b px-4 lg:h-[60px] xl:px-8">
           <MaxWidthWrapper className="flex max-w-7xl items-center gap-x-3 px-0">
-            <MobileSheetSidebar links={filteredLinks} />
+            <MobileSheetSidebar links={sidebarLinks} />
+
+            {/* Logo for mobile/header */}
+            <div className="flex items-center gap-2 md:hidden">
+              <Image
+                src="/logo.png"
+                alt="Logo"
+                width={32}
+                height={32}
+                className="h-8 w-8"
+              />
+              <span className="font-semibold text-lg hidden sm:block">
+                Domain Nest
+              </span>
+            </div>
 
             <div className="w-full flex-1">
-              <SearchCommand links={filteredLinks} />
+              {/* Empty space - removed SearchCommand */}
             </div>
 
             <ModeToggle />

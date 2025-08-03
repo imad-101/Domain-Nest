@@ -27,15 +27,15 @@ export function constructMetadata({
     title,
     description,
     keywords: [
+      "Domain Management",
+      "SSL Monitoring", 
+      "Website Health",
+      "Domain Analytics",
       "Next.js",
       "React",
       "Prisma",
-      "Neon",
       "Auth.js",
       "shadcn ui",
-      "Resend",
-      "React Email",
-      "Stripe",
     ],
     authors: [
       {
