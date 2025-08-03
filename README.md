@@ -1,10 +1,10 @@
-<a href="https://next-saas-stripe-starter.vercel.app">
-  <img alt="SaaS Starter" src="public/_static/og.jpg">
-  <h1 align="center">Next SaaS Stripe Starter</h1>
+<a href="https://domnest.app">
+  <img alt="Domain Nest" src="public/_static/og.jpg">
+  <h1 align="center">Domain Nest</h1>
 </a>
 
 <p align="center">
-  Start at full speed with SaaS Starter !
+  Professional domain management platform with SSL monitoring and analytics
 </p>
 
 <p align="center">
@@ -24,9 +24,9 @@
 
 ## Introduction
 
-Empower your next project with the stack of Next.js 14, Prisma, Neon, Auth.js v5, Resend, React Email, Shadcn/ui, and Stripe.
+Domain Nest is a professional domain management platform built with Next.js 14, Prisma, Auth.js v5, and modern web technologies.
 <br/>
-All seamlessly integrated with the SaaS Starter to accelerate your development and saas journey.
+Manage your domains with SSL monitoring, uptime tracking, and comprehensive analytics all in one place.
 
 ## Installation
 
