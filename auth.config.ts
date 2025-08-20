@@ -4,6 +4,7 @@ import Resend from "next-auth/providers/resend";
 
 import { env } from "@/env.mjs";
 import { sendVerificationRequest } from "@/lib/email";
+import { getUserById } from "@/lib/user";
 
 export default {
   providers: [
@@ -23,6 +24,37 @@ export default {
     error: "/auth/error",
   },
   callbacks: {
+    async session({ token, session }) {
+      if (session.user) {
+        if (token.sub) {
+          session.user.id = token.sub;
+        }
+
+        if (token.email) {
+          session.user.email = token.email;
+        }
+
+        session.user.name = token.name;
+        session.user.image = token.picture;
+      }
+
+      return session;
+    },
+
+    async jwt({ token }) {
+      if (!token.sub) return token;
+
+      const dbUser = await getUserById(token.sub);
+
+      if (!dbUser) return token;
+
+      token.name = dbUser.name;
+      token.email = dbUser.email;
+      token.picture = dbUser.image;
+
+      return token;
+    },
+
     authorized({ auth, request: { nextUrl } }) {
       const isLoggedIn = !!auth?.user;
       const isOnDashboard = nextUrl.pathname.startsWith("/dashboard");

@@ -25,8 +25,7 @@ export async function updateStaleWhoisData(): Promise<JobResult[]> {
     where: {
       OR: [
         { updatedAt: { lt: staleThreshold } },
-        { registrar: null },
-        { expiresAt: null }
+        { registrar: null }
       ]
     },
     include: { user: true }
