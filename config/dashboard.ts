@@ -13,27 +13,28 @@ export const sidebarLinks: SidebarNavItem[] = [
       {
         href: "/dashboard/health",
         icon: "clock",
-        title: "Domain Health Dashboard & Analytics",
+        title: "Health & Analytics",
+      },
+      {
+        href: "/dashboard/data-management",
+        icon: "package",
+        title: "Data Management",
       },
       {
         href: "/dashboard/billing",
         icon: "billing",
         title: "Billing",
       },
-      { href: "/dashboard/charts", icon: "lineChart", title: "Charts" },
-      {
-        href: "#/dashboard/posts",
-        icon: "post",
-        title: "User Posts",
-        disabled: true,
-      },
+      
+     
     ],
   },
   {
     title: "OPTIONS",
     items: [
-      { href: "/dashboard/settings", icon: "settings", title: "Settings" },
       { href: "/", icon: "home", title: "Homepage" },
+      { href: "/dashboard/settings", icon: "settings", title: "Settings" },
+      
       {
         href: "#",
         icon: "messages",

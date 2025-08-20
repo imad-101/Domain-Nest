@@ -17,7 +17,7 @@ interface SupportModalProps {
 export function SupportModal({ open, onOpenChange }: SupportModalProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
+      <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-[600px]">
         <DialogHeader className="sr-only">
           <DialogTitle>Support</DialogTitle>
           <DialogDescription>

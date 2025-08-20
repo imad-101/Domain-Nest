@@ -231,7 +231,7 @@ export default function SSLMonitorPage() {
           <Button
             onClick={bulkSSLCheck}
             disabled={bulkChecking}
-            className="bg-blue-600 hover:bg-blue-700 text-white"
+            className="bg-blue-600 text-white hover:bg-blue-700"
           >
             {bulkChecking ? (
               <>
@@ -249,7 +249,7 @@ export default function SSLMonitorPage() {
       </div>
 
       {/* SSL Health Overview */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Valid Certificates</CardTitle>
@@ -258,7 +258,7 @@ export default function SSLMonitorPage() {
           <CardContent>
             <div className="text-2xl font-bold">{stats.valid}</div>
             <Progress value={getValidPercentage()} className="mt-2" />
-            <p className="text-xs text-muted-foreground mt-1">{getValidPercentage()}% of total</p>
+            <p className="mt-1 text-xs text-muted-foreground">{getValidPercentage()}% of total</p>
           </CardContent>
         </Card>
 
@@ -318,7 +318,7 @@ export default function SSLMonitorPage() {
         </TabsList>
 
         <TabsContent value="overview" className="space-y-6">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
             {/* Recent SSL Checks */}
             <Card>
               <CardHeader>
@@ -365,49 +365,49 @@ export default function SSLMonitorPage() {
                 <div className="flex items-center justify-between">
                   <span className="text-sm">Valid</span>
                   <div className="flex items-center gap-2">
-                    <div className="w-20 bg-gray-200 rounded-full h-2">
+                    <div className="h-2 w-20 rounded-full bg-gray-200">
                       <div 
-                        className="bg-green-500 h-2 rounded-full" 
+                        className="h-2 rounded-full bg-green-500" 
                         style={{ width: `${stats.total > 0 ? (stats.valid / stats.total) * 100 : 0}%` }}
                       />
                     </div>
-                    <span className="text-sm w-8">{stats.valid}</span>
+                    <span className="w-8 text-sm">{stats.valid}</span>
                   </div>
                 </div>
                 <div className="flex items-center justify-between">
                   <span className="text-sm">Warning</span>
                   <div className="flex items-center gap-2">
-                    <div className="w-20 bg-gray-200 rounded-full h-2">
+                    <div className="h-2 w-20 rounded-full bg-gray-200">
                       <div 
-                        className="bg-orange-500 h-2 rounded-full" 
+                        className="h-2 rounded-full bg-orange-500" 
                         style={{ width: `${stats.total > 0 ? (stats.warning / stats.total) * 100 : 0}%` }}
                       />
                     </div>
-                    <span className="text-sm w-8">{stats.warning}</span>
+                    <span className="w-8 text-sm">{stats.warning}</span>
                   </div>
                 </div>
                 <div className="flex items-center justify-between">
                   <span className="text-sm">Expired</span>
                   <div className="flex items-center gap-2">
-                    <div className="w-20 bg-gray-200 rounded-full h-2">
+                    <div className="h-2 w-20 rounded-full bg-gray-200">
                       <div 
-                        className="bg-red-500 h-2 rounded-full" 
+                        className="h-2 rounded-full bg-red-500" 
                         style={{ width: `${stats.total > 0 ? (stats.expired / stats.total) * 100 : 0}%` }}
                       />
                     </div>
-                    <span className="text-sm w-8">{stats.expired}</span>
+                    <span className="w-8 text-sm">{stats.expired}</span>
                   </div>
                 </div>
                 <div className="flex items-center justify-between">
                   <span className="text-sm">Unknown</span>
                   <div className="flex items-center gap-2">
-                    <div className="w-20 bg-gray-200 rounded-full h-2">
+                    <div className="h-2 w-20 rounded-full bg-gray-200">
                       <div 
-                        className="bg-gray-500 h-2 rounded-full" 
+                        className="h-2 rounded-full bg-gray-500" 
                         style={{ width: `${stats.total > 0 ? ((stats.unknown + stats.error) / stats.total) * 100 : 0}%` }}
                       />
                     </div>
-                    <span className="text-sm w-8">{stats.unknown + stats.error}</span>
+                    <span className="w-8 text-sm">{stats.unknown + stats.error}</span>
                   </div>
                 </div>
               </CardContent>
@@ -425,9 +425,9 @@ export default function SSLMonitorPage() {
             </CardHeader>
             <CardContent>
               {getExpiringDomains().length === 0 ? (
-                <div className="text-center py-8">
-                  <Icons.shield className="size-12 text-green-500 mx-auto mb-4" />
-                  <h3 className="text-lg font-semibold mb-2">All SSL Certificates are Valid</h3>
+                <div className="py-8 text-center">
+                  <Icons.shield className="mx-auto mb-4 size-12 text-green-500" />
+                  <h3 className="mb-2 text-lg font-semibold">All SSL Certificates are Valid</h3>
                   <p className="text-muted-foreground">No certificates are expiring soon.</p>
                 </div>
               ) : (
@@ -465,7 +465,7 @@ export default function SSLMonitorPage() {
                               variant="outline"
                               onClick={() => checkSSL(domain.id)}
                             >
-                              <Icons.shield className="size-4 mr-1" />
+                              <Icons.shield className="mr-1 size-4" />
                               Recheck
                             </Button>
                           </TableCell>
@@ -524,7 +524,7 @@ export default function SSLMonitorPage() {
                             variant="outline"
                             onClick={() => checkSSL(domain.id)}
                           >
-                            <Icons.shield className="size-4 mr-1" />
+                            <Icons.shield className="mr-1 size-4" />
                             Check
                           </Button>
                         </TableCell>

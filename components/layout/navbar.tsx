@@ -2,6 +2,7 @@
 
 import { useContext } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { useSelectedLayoutSegment } from "next/navigation";
 import { useSession } from "next-auth/react";
 
@@ -40,11 +41,14 @@ export function NavBar({ scroll = false }: NavBarProps) {
           className="flex h-14 items-center justify-between py-4"
         >
         <div className="flex gap-6 md:gap-10">
-          <Link href="/" className="flex items-center space-x-1.5">
-            <Icons.logo />
-            <span className="font-urban text-xl font-bold">
-              {siteConfig.name}
-            </span>
+          <Link href="/" className="flex items-center">
+            <Image
+              src="/DomNest.png"
+              alt="Domain Nest Logo"
+              width={200}
+              height={50}
+              className="h-10 w-auto max-w-[200px]"
+            />
           </Link>
 
           {links && links.length > 0 ? (

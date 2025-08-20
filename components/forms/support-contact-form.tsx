@@ -82,18 +82,18 @@ export function SupportContactForm({ onClose }: SupportContactFormProps) {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="text-center space-y-2">
+      <div className="space-y-2 text-center">
         <h2 className="text-2xl font-semibold">Get Support</h2>
         <p className="text-muted-foreground">
-          We're here to help! Send us a message or reach out directly.
+          We&apos;re here to help! Send us a message or reach out directly.
         </p>
       </div>
 
       {/* Direct Contact */}
-      <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+      <div className="rounded-lg border border-blue-200 bg-blue-50 p-4">
         <div className="flex items-center gap-3">
-          <div className="p-2 bg-blue-100 rounded-full">
-            <Icons.twitter className="h-5 w-5 text-blue-600" />
+          <div className="rounded-full bg-blue-100 p-2">
+            <Icons.twitter className="size-5 text-blue-600" />
           </div>
           <div>
             <h3 className="font-medium text-blue-900">Talk directly to the founder</h3>
@@ -101,7 +101,7 @@ export function SupportContactForm({ onClose }: SupportContactFormProps) {
               href="https://x.com/your_handle" 
               target="_blank" 
               rel="noopener noreferrer"
-              className="text-blue-600 hover:text-blue-800 font-medium"
+              className="font-medium text-blue-600 hover:text-blue-800"
             >
               @your_handle on X (Twitter)
             </a>
@@ -205,7 +205,7 @@ export function SupportContactForm({ onClose }: SupportContactFormProps) {
               className="flex-1"
             >
               {isLoading && (
-                <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
+                <Icons.spinner className="mr-2 size-4 animate-spin" />
               )}
               Send Message
             </Button>

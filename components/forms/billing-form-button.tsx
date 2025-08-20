@@ -33,7 +33,7 @@ export function BillingFormButton({
 
   return (
     <Button
-      variant={userOffer ? "default" : "outline"}
+      variant={userOffer ? "default" : "secondary"}
       rounded="full"
       className="w-full"
       disabled={isPending}

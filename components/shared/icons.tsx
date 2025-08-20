@@ -19,6 +19,7 @@ import {
   LayoutPanelLeft,
   LineChart,
   Loader2,
+  Lock,
   LucideIcon,
   LucideProps,
   Menu,
@@ -36,6 +37,7 @@ import {
   Trash,
   User,
   X,
+  Zap,
 } from "lucide-react";
 
 export type Icon = LucideIcon;
@@ -110,6 +112,7 @@ export const Icons = {
   home: Home,
   laptop: Laptop,
   lineChart: LineChart,
+  lock: Lock,
   logo: Puzzle,
   media: Image,
   menu: Menu,
@@ -145,4 +148,5 @@ export const Icons = {
   user: User,
   warning: AlertTriangle,
   x: X,
+  zap: Zap,
 };

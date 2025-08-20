@@ -47,7 +47,7 @@ export default async function DomainSettingsPage({ params }: DomainSettingsPageP
     redirect("/dashboard");
   }
 
-  const getDaysUntilExpiry = (expiresAt: string) => {
+  const getDaysUntilExpiry = (expiresAt: Date | string) => {
     const now = new Date();
     const expiry = new Date(expiresAt);
     return Math.ceil((expiry.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
@@ -77,7 +77,7 @@ export default async function DomainSettingsPage({ params }: DomainSettingsPageP
       >
         <Link href="/dashboard">
           <Button variant="outline">
-            <Icons.arrowLeft className="mr-2 h-4 w-4" />
+            <Icons.arrowLeft className="mr-2 size-4" />
             Back to Dashboard
           </Button>
         </Link>
@@ -93,7 +93,7 @@ export default async function DomainSettingsPage({ params }: DomainSettingsPageP
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
               <div>
                 <label className="text-sm font-medium text-muted-foreground">Domain Name</label>
                 <p className="text-lg font-semibold">{domain.domainName}</p>
@@ -110,13 +110,13 @@ export default async function DomainSettingsPage({ params }: DomainSettingsPageP
               </div>
               <div>
                 <label className="text-sm font-medium text-muted-foreground">SSL Status</label>
-                <Badge variant={sslStatus.color as any}>
+                <Badge variant={sslStatus.color as "default" | "secondary" | "destructive"}>
                   {sslStatus.text}
                 </Badge>
               </div>
             </div>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4">
+            <div className="grid grid-cols-1 gap-4 pt-4 md:grid-cols-2">
               <div>
                 <label className="text-sm font-medium text-muted-foreground">Domain Expires</label>
                 <p className="text-lg">{new Date(domain.expiresAt).toLocaleDateString()}</p>
@@ -165,7 +165,7 @@ export default async function DomainSettingsPage({ params }: DomainSettingsPageP
               <div>
                 <h4 className="font-medium">Health Score</h4>
                 <div className="flex items-center gap-2">
-                  <div className="flex-1 bg-muted rounded-full h-2">
+                  <div className="h-2 flex-1 rounded-full bg-muted">
                     <div 
                       className={`h-2 rounded-full ${
                         domain.healthScore >= 90 ? 'bg-green-500' :
@@ -194,22 +194,22 @@ export default async function DomainSettingsPage({ params }: DomainSettingsPageP
             <div className="flex flex-wrap gap-3">
               <Link href={`/dashboard/ssl?domain=${domain.domainName}`}>
                 <Button variant="outline">
-                  <Icons.shield className="mr-2 h-4 w-4" />
+                  <Icons.shield className="mr-2 size-4" />
                   SSL Certificate
                 </Button>
               </Link>
               <Link href={`/dashboard/health?domain=${domain.domainName}`}>
                 <Button variant="outline">
-                  <Icons.clock className="mr-2 h-4 w-4" />
+                  <Icons.clock className="mr-2 size-4" />
                   Health Analytics
                 </Button>
               </Link>
               <Button variant="outline" disabled>
-                <Icons.settings className="mr-2 h-4 w-4" />
+                <Icons.settings className="mr-2 size-4" />
                 DNS Settings (Coming Soon)
               </Button>
               <Button variant="outline" disabled>
-                <Icons.refresh className="mr-2 h-4 w-4" />
+                <Icons.refresh className="mr-2 size-4" />
                 Force Refresh
               </Button>
             </div>
@@ -228,7 +228,7 @@ export default async function DomainSettingsPage({ params }: DomainSettingsPageP
             <CardContent>
               <div className="space-y-2">
                 {domain.uptimeChecks.map((check) => (
-                  <div key={check.id} className="flex items-center justify-between p-2 border rounded">
+                  <div key={check.id} className="flex items-center justify-between rounded border p-2">
                     <div className="flex items-center gap-2">
                       <Badge variant={check.isUp ? "default" : "destructive"}>
                         {check.isUp ? "Up" : "Down"}
