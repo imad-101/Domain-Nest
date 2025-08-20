@@ -21,26 +21,24 @@ export default async function Dashboard({ children }: ProtectedLayoutProps) {
   if (!user) redirect("/login");
 
   return (
-    <div className="relative flex min-h-screen w-full">
+    <div className="relative flex min-h-screen w-full bg-background">
       <DashboardSidebar links={sidebarLinks} />
 
-      <div className="flex flex-1 flex-col">
-        <header className="sticky top-0 z-50 flex h-14 bg-background border-b px-4 lg:h-[60px] xl:px-8">
+      <div className="relative z-10 flex flex-1 flex-col">
+        <header className="sticky top-0 z-30 flex h-14 border-b bg-background/95 px-4 backdrop-blur supports-[backdrop-filter]:bg-background/60 lg:h-[60px] xl:px-8">
           <MaxWidthWrapper className="flex max-w-7xl items-center gap-x-3 px-0">
             <MobileSheetSidebar links={sidebarLinks} />
 
             {/* Logo for mobile/header */}
             <div className="flex items-center gap-2 md:hidden">
               <Image
-                src="/logo.png"
-                alt="Logo"
-                width={32}
+                src="/DomNest.png"
+                alt="Domain Nest Logo"
+                width={120}
                 height={32}
-                className="h-8 w-8"
+                className="h-8 w-auto max-w-[120px]"
               />
-              <span className="font-semibold text-lg hidden sm:block">
-                Domain Nest
-              </span>
+             
             </div>
 
             <div className="w-full flex-1">
@@ -52,8 +50,8 @@ export default async function Dashboard({ children }: ProtectedLayoutProps) {
           </MaxWidthWrapper>
         </header>
 
-        <main className="flex-1 p-4 xl:px-8">
-          <MaxWidthWrapper className="flex h-full max-w-7xl flex-col gap-4 px-0 lg:gap-6">
+        <main className="relative z-0 flex-1 p-4 xl:px-8">
+          <MaxWidthWrapper className="relative z-0 flex h-full max-w-7xl flex-col gap-4 px-0 lg:gap-6">
             {children}
           </MaxWidthWrapper>
         </main>

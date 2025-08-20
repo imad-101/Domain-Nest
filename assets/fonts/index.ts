@@ -1,8 +1,11 @@
 import localFont from "next/font/local";
 import { Inter as FontSans, Urbanist } from "next/font/google";
+import { Concert_One, Amaranth } from "next/font/google";
 
-export const fontSans = FontSans({
+export const fontSans = Amaranth({
   subsets: ["latin"],
+  weight: ["400", "700"],
+  style: ["normal", "italic"],
   variable: "--font-sans",
 })
 
@@ -11,8 +14,9 @@ export const fontUrban = Urbanist({
   variable: "--font-urban",
 })
 
-export const fontHeading = localFont({
-  src: "./CalSans-SemiBold.woff2",
+export const fontHeading = Concert_One({
+  subsets: ["latin"],
+  weight: ["400"],
   variable: "--font-heading",
 })
 

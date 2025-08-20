@@ -202,8 +202,8 @@ export default function HealthDashboardPage() {
       <div className="space-y-6">
         <Card>
           <CardContent className="flex flex-col items-center justify-center py-12">
-            <Icons.warning className="size-12 text-muted-foreground mb-4" />
-            <h3 className="text-lg font-semibold mb-2">No Data Available</h3>
+            <Icons.warning className="mb-4 size-12 text-muted-foreground" />
+            <h3 className="mb-2 text-lg font-semibold">No Data Available</h3>
             <p className="text-muted-foreground">Unable to load health analytics data.</p>
           </CardContent>
         </Card>
@@ -262,7 +262,7 @@ export default function HealthDashboardPage() {
       </div>
 
       {/* Overview Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Overall Health</CardTitle>
@@ -314,9 +314,9 @@ export default function HealthDashboardPage() {
           <CardContent>
             <div className="flex items-center gap-2">
               <div className="text-sm">
-                <span className="text-green-600 font-semibold">{data.overallStats.healthyDomains}</span> healthy,{" "}
-                <span className="text-yellow-600 font-semibold">{data.overallStats.warningDomains}</span> warning,{" "}
-                <span className="text-red-600 font-semibold">{data.overallStats.criticalDomains}</span> critical
+                <span className="font-semibold text-green-600">{data.overallStats.healthyDomains}</span> healthy,{" "}
+                <span className="font-semibold text-yellow-600">{data.overallStats.warningDomains}</span> warning,{" "}
+                <span className="font-semibold text-red-600">{data.overallStats.criticalDomains}</span> critical
               </div>
             </div>
           </CardContent>
@@ -332,7 +332,7 @@ export default function HealthDashboardPage() {
         </TabsList>
 
         <TabsContent value="overview" className="space-y-6">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
             {/* Uptime Chart */}
             <Card>
               <CardHeader>
@@ -438,7 +438,7 @@ export default function HealthDashboardPage() {
         </TabsContent>
 
         <TabsContent value="performance" className="space-y-6">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
             {/* Performance Breakdown */}
             <Card>
               <CardHeader>
@@ -521,7 +521,7 @@ export default function HealthDashboardPage() {
         </TabsContent>
 
         <TabsContent value="domains">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
             {data.domains.map((domain) => {
               const uptimeStatus = getUptimeStatus(domain.metrics.uptimePercentage);
               

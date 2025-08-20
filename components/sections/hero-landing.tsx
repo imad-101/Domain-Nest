@@ -1,15 +1,14 @@
 import Link from "next/link";
 
-import { env } from "@/env.mjs";
-import { siteConfig } from "@/config/site";
-import { cn, nFormatter } from "@/lib/utils";
+
+import { cn } from "@/lib/utils";
 import { buttonVariants } from "@/components/ui/button";
 import { Icons } from "@/components/shared/icons";
 
 export default function HeroLanding() {
 
   return (
-    <section className="space-y-6 py-12 sm:py-20 lg:py-20">
+    <section className="space-y-6 py-12 sm:py-20 lg:py-20 ">
       <div className="container flex max-w-5xl flex-col items-center gap-5 text-center">
         <Link
           href="/pricing"
@@ -22,10 +21,10 @@ export default function HeroLanding() {
           <span className="hidden md:flex">Try&nbsp;</span> Domain Nest Free
         </Link>
 
-        <h1 className="text-balance font-urban text-4xl font-extrabold tracking-tight sm:text-5xl md:text-6xl lg:text-[66px]">
-          Manage Your Domains with{" "}
-          <span className="text-gradient_indigo-purple font-extrabold">
-            Confidence
+        <h1 className="tracking-light text-balance text-4xl font-extrabold sm:text-5xl md:text-6xl lg:text-[66px]">
+          All Your Domains. One Dashboard.{" "}
+          <span className="font-extrabold text-[#ee6c4d]">
+            Zero Stress.
           </span>
         </h1>
 
@@ -33,8 +32,7 @@ export default function HeroLanding() {
           className="max-w-2xl text-balance leading-normal text-muted-foreground sm:text-xl sm:leading-8"
           style={{ animationDelay: "0.35s", animationFillMode: "forwards" }}
         >
-          Professional domain management platform with DNS monitoring, SSL certificates, 
-          domain transfers, and comprehensive analytics. Keep your online presence secure and optimized.
+          Track renewals, manage DNS, SSL, and transfers effortlessly — and never lose control of your online presence again.
         </p>
 
         <div

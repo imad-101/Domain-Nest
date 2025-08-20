@@ -1,4 +1,5 @@
 import { signIn } from "next-auth/react";
+import Image from "next/image";
 import {
   Dispatch,
   SetStateAction,
@@ -26,7 +27,13 @@ function SignInModal({
       <div className="w-full">
         <div className="flex flex-col items-center justify-center space-y-3 border-b bg-background px-4 py-6 pt-8 text-center md:px-16">
           <a href={siteConfig.url}>
-            <Icons.logo className="size-10" />
+            <Image
+              src="/DomNest.png"
+              alt="Domain Nest Logo"
+              width={160}
+              height={50}
+              className="h-12 w-auto max-w-[160px]"
+            />
           </a>
           <h3 className="font-urban text-2xl font-bold">Sign In</h3>
           <p className="text-sm text-gray-500">

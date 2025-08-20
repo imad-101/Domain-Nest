@@ -70,6 +70,26 @@ export const pricingData: SubscriptionPlan[] = [
   },
 ];
 
+// Lifetime plan - separate from subscription plans
+export const lifetimePlan = {
+  title: "Lifetime",
+  description: "One-time payment, forever access",
+  benefits: [
+    "Everything in Business plan",
+    "Lifetime access to all features",
+    "No monthly or yearly fees",
+    "Priority customer support",
+    "Future feature updates included",
+    "Commercial license included",
+    "Advanced analytics dashboard",
+    "White-label customization",
+  ],
+  limitations: [],
+  price: 49,
+  originalPrice: 300, // Yearly business plan price for comparison
+  stripeId: env.NEXT_PUBLIC_STRIPE_LIFETIME_PLAN_ID || null,
+};
+
 export const plansColumns = [
   "starter",
   "pro",

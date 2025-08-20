@@ -2,10 +2,12 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Icons } from "@/components/shared/icons";
+import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { DomainForm } from "@/components/forms/domain-form";
 import { toast } from "sonner";
 import {
   AlertDialog,
@@ -17,6 +19,21 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { ArrowUpDown, Grid, List, MoreHorizontal } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 interface Domain {
   id: string;
@@ -32,12 +49,15 @@ interface Domain {
 
 interface DomainsTableProps {
   refreshTrigger: number;
+  onDomainAdded: () => void;
 }
 
-export function DomainsTable({ refreshTrigger }: DomainsTableProps) {
+export function DomainsTable({ refreshTrigger, onDomainAdded }: DomainsTableProps) {
   const [domains, setDomains] = useState<Domain[]>([]);
   const [loading, setLoading] = useState(true);
-  const [refreshing, setRefreshing] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [sortBy, setSortBy] = useState("name");
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
   const [domainToDelete, setDomainToDelete] = useState<string | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
 
@@ -59,33 +79,10 @@ export function DomainsTable({ refreshTrigger }: DomainsTableProps) {
     }
   };
 
-  const refreshDomainsData = async () => {
-    setRefreshing(true);
-    try {
-      const response = await fetch("/api/domains/refresh", {
-        method: "POST",
-      });
-      
-      if (response.ok) {
-        const result = await response.json();
-        console.log("Refresh result:", result);
-        // Fetch domains again to get updated data
-        await fetchDomains();
-      } else {
-        console.error("Failed to refresh domains");
-      }
-    } catch (error) {
-      console.error("Error refreshing domains:", error);
-    } finally {
-      setRefreshing(false);
-    }
-  };
-
   const getDaysUntilExpiry = (expiresAt: string) => {
     const expiryDate = new Date(expiresAt);
     const now = new Date();
     
-    // Set time to midnight for both dates to compare just the date part
     expiryDate.setHours(0, 0, 0, 0);
     now.setHours(0, 0, 0, 0);
     
@@ -94,74 +91,17 @@ export function DomainsTable({ refreshTrigger }: DomainsTableProps) {
     return diffDays;
   };
 
-  const getExpiryStatus = (expiresAt: string) => {
-    const daysUntilExpiry = getDaysUntilExpiry(expiresAt);
+  const getExpiryBadge = (expiresAt: string) => {
+    const days = getDaysUntilExpiry(expiresAt);
     
-    if (daysUntilExpiry < 0) {
-      return { status: "expired", color: "destructive", text: "Expired" };
-    } else if (daysUntilExpiry <= 30) {
-      return { status: "warning", color: "secondary", text: `${daysUntilExpiry} days left` };
+    if (days < 0) {
+      return { variant: "destructive" as const, text: "Expired" };
+    } else if (days <= 30) {
+      return { variant: "secondary" as const, text: `${days} days` };
+    } else if (days <= 365) {
+      return { variant: "default" as const, text: `${Math.floor(days / 30)} months` };
     } else {
-      return { status: "active", color: "default", text: `${daysUntilExpiry} days left` };
-    }
-  };
-
-  const getSSLDaysUntilExpiry = (sslExpiresAt: string | null) => {
-    if (!sslExpiresAt) return null;
-    const expiryDate = new Date(sslExpiresAt);
-    const now = new Date();
-    
-    expiryDate.setHours(0, 0, 0, 0);
-    now.setHours(0, 0, 0, 0);
-    
-    const diffTime = expiryDate.getTime() - now.getTime();
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    return diffDays;
-  };
-
-  const getSSLStatus = (domain: Domain) => {
-    if (!domain.sslStatus || domain.sslStatus === 'unknown') {
-      return { status: "unknown", color: "outline", text: "Not checked" };
-    }
-    
-    if (domain.sslStatus === 'error') {
-      return { status: "error", color: "destructive", text: "SSL Error" };
-    }
-
-    const daysUntilExpiry = getSSLDaysUntilExpiry(domain.sslExpiresAt || null);
-    
-    if (daysUntilExpiry === null) {
-      return { status: "unknown", color: "outline", text: "No SSL" };
-    }
-    
-    if (daysUntilExpiry < 0) {
-      return { status: "expired", color: "destructive", text: "SSL Expired" };
-    } else if (daysUntilExpiry <= 30) {
-      return { status: "warning", color: "secondary", text: `SSL expires in ${daysUntilExpiry} days` };
-    } else {
-      return { status: "valid", color: "default", text: `SSL valid (${daysUntilExpiry} days)` };
-    }
-  };
-
-  const checkSSL = async (domainId: string) => {
-    try {
-      const response = await fetch("/api/domains/ssl-check", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ domainId }),
-      });
-      
-      if (response.ok) {
-        await fetchDomains(); // Refresh domains to show updated SSL data
-        toast.success("SSL check completed");
-      } else {
-        toast.error("Failed to check SSL");
-      }
-    } catch (error) {
-      console.error("Error checking SSL:", error);
-      toast.error("Failed to check SSL");
+      return { variant: "default" as const, text: `${Math.floor(days / 365)} years` };
     }
   };
 
@@ -176,6 +116,7 @@ export function DomainsTable({ refreshTrigger }: DomainsTableProps) {
         await fetchDomains();
         toast.success("Domain deleted successfully");
         setDomainToDelete(null);
+        onDomainAdded(); // Refresh parent component
       } else {
         toast.error("Failed to delete domain");
       }
@@ -187,145 +128,226 @@ export function DomainsTable({ refreshTrigger }: DomainsTableProps) {
     }
   };
 
+  const filteredDomains = domains.filter(domain =>
+    domain.domainName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    domain.provider.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  const sortedDomains = [...filteredDomains].sort((a, b) => {
+    let aValue, bValue;
+    
+    switch (sortBy) {
+      case "expiry":
+        aValue = new Date(a.expiresAt).getTime();
+        bValue = new Date(b.expiresAt).getTime();
+        break;
+      case "registrar":
+        aValue = a.provider.toLowerCase();
+        bValue = b.provider.toLowerCase();
+        break;
+      case "domain":
+      default:
+        aValue = a.domainName.toLowerCase();
+        bValue = b.domainName.toLowerCase();
+        break;
+    }
+    
+    if (aValue < bValue) return sortOrder === "asc" ? -1 : 1;
+    if (aValue > bValue) return sortOrder === "asc" ? 1 : -1;
+    return 0;
+  });
+
+  const handleSort = (field: string) => {
+    if (sortBy === field) {
+      setSortOrder(sortOrder === "asc" ? "desc" : "asc");
+    } else {
+      setSortBy(field);
+      setSortOrder("asc");
+    }
+  };
+
   if (loading) {
     return (
-      <Card>
-        <CardHeader>
-          <CardTitle>Your Domains</CardTitle>
-          <CardDescription>Loading your domains...</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="flex items-center justify-center py-8">
-            <Icons.spinner className="size-6 animate-spin" />
-          </div>
-        </CardContent>
-      </Card>
-    );
-  }
-
-  if (domains.length === 0) {
-    return (
-      <Card>
-        <CardHeader>
-          <CardTitle>Your Domains</CardTitle>
-          <CardDescription>Manage and monitor your domain portfolio.</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="flex items-center justify-center py-8 text-muted-foreground">
-            <div className="text-center">
-              <Icons.search className="mx-auto size-12 mb-4 opacity-50" />
-              <p>No domains found</p>
-              <p className="text-sm">Add your first domain using the form above</p>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+      <div className="flex items-center justify-center py-12">
+        <Icons.spinner className="size-8 animate-spin" />
+      </div>
     );
   }
 
   return (
-    <Card>
-      <CardHeader>
-        <div className="flex items-center justify-between">
+    <div className="space-y-6">
+      {/* Filter Controls */}
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-6">
           <div>
-            <CardTitle>Your Domains ({domains.length})</CardTitle>
-            <CardDescription>Manage and monitor your domain portfolio.</CardDescription>
+            <label className="mb-3 block text-sm font-medium text-muted-foreground">Filter</label>
+            <Input
+              placeholder="Search"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="h-11 w-72"
+            />
           </div>
-          <button
-            onClick={refreshDomainsData}
-            disabled={refreshing}
-            className="flex items-center gap-2 px-3 py-2 text-sm bg-blue-50 hover:bg-blue-100 text-blue-700 rounded-md transition-colors disabled:opacity-50"
-          >
-            <Icons.refresh className={`size-4 ${refreshing ? 'animate-spin' : ''}`} />
-            {refreshing ? 'Refreshing...' : 'Refresh Data'}
-          </button>
+          
+          <div>
+            <label className="mb-3 block text-sm font-medium text-muted-foreground">Fields</label>
+            <Select value="domain-registrar-expiry" onValueChange={() => {}}>
+              <SelectTrigger className="h-11 w-72">
+                <SelectValue placeholder="Domain Name, Registrar, Expiry Date" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="domain-registrar-expiry">Domain Name, Registrar, Expiry Date</SelectItem>
+                <SelectItem value="domain">Domain Name</SelectItem>
+                <SelectItem value="registrar">Registrar</SelectItem>
+                <SelectItem value="expiry">Expiry Date</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          
+        
         </div>
-      </CardHeader>
-      <CardContent>
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Domain Name</TableHead>
-              <TableHead>Provider</TableHead>
-              <TableHead>Domain Expiry</TableHead>
-                            <TableHead>Domain Expiry</TableHead>
-              <TableHead>SSL Status</TableHead>
-              <TableHead>Created Date</TableHead>
-              <TableHead className="text-right">Actions</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {domains.map((domain) => {
-              const daysUntilExpiry = getDaysUntilExpiry(domain.expiresAt);
-              const expiryStatus = getExpiryStatus(domain.expiresAt);
-              const sslStatus = getSSLStatus(domain);
-              return (
-                <TableRow key={domain.id}>
-                  <TableCell className="font-medium">{domain.domainName}</TableCell>
-                  <TableCell>{domain.provider}</TableCell>
-                  <TableCell>
-                    <div className="space-y-1">
-                      <Badge variant={expiryStatus.color as any}>
-                        {daysUntilExpiry < 0 ? "Expired" : `${daysUntilExpiry} days`}
-                      </Badge>
-                      <div className="text-xs text-muted-foreground">
-                        Expires: {new Date(domain.expiresAt).toLocaleDateString()}
+        
+        <DomainForm onDomainAdded={onDomainAdded} />
+      </div>
+
+      {/* Domains Table */}
+      {sortedDomains.length === 0 ? (
+        <div className="flex flex-col items-center justify-center py-16 text-center">
+          <Icons.search className="mb-6 size-16 text-muted-foreground" />
+          <h3 className="mb-3 text-xl font-semibold">No domains found</h3>
+          <p className="text-base text-muted-foreground">
+            {searchTerm ? "Try adjusting your search terms" : "Add your first domain to get started"}
+          </p>
+        </div>
+      ) : (
+        <div className="rounded-md border">
+          <Table>
+            <TableHeader>
+              <TableRow className="h-14">
+                <TableHead className="w-16"></TableHead>
+                <TableHead>
+                  <Button
+                    variant="ghost"
+                    onClick={() => handleSort("domain")}
+                    className="h-auto p-0 text-base font-semibold hover:bg-transparent"
+                  >
+                    Domain
+                    <ArrowUpDown className="ml-2 size-5" />
+                  </Button>
+                </TableHead>
+                <TableHead>
+                  <Button
+                    variant="ghost"
+                    onClick={() => handleSort("registrar")}
+                    className="h-auto p-0 text-base font-semibold hover:bg-transparent"
+                  >
+                    Registrar
+                    <ArrowUpDown className="ml-2 size-5" />
+                  </Button>
+                </TableHead>
+                <TableHead>
+                  <Button
+                    variant="ghost"
+                    onClick={() => handleSort("expiry")}
+                    className="h-auto p-0 text-base font-semibold hover:bg-transparent"
+                  >
+                    Expiry
+                    <ArrowUpDown className="ml-2 size-5" />
+                  </Button>
+                </TableHead>
+                <TableHead className="w-16"></TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {sortedDomains.map((domain) => {
+                const expiryBadge = getExpiryBadge(domain.expiresAt);
+                const domainIcon = domain.domainName.charAt(0).toUpperCase();
+                
+                return (
+                  <TableRow key={domain.id} className="h-16 hover:bg-muted/50">
+                    <TableCell className="py-4">
+                      <div className="flex size-10 items-center justify-center overflow-hidden rounded-full text-sm font-medium">
+                        <img
+                          src={`https://www.google.com/s2/favicons?domain=${domain.domainName}&sz=32`}
+                          alt={`${domain.domainName} favicon`}
+                          className="size-8 rounded"
+                          onError={(e) => {
+                            // Fallback to letter if favicon fails to load
+                            const target = e.target as HTMLImageElement;
+                            target.style.display = 'none';
+                            const parent = target.parentElement;
+                            if (parent) {
+                              parent.innerHTML = domainIcon;
+                              parent.className = "w-10 h-10 rounded-full bg-secondary flex items-center justify-center text-sm font-medium";
+                            }
+                          }}
+                        />
                       </div>
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    <div className="space-y-1">
-                      <Badge variant={sslStatus.color as any}>
-                        {sslStatus.text}
-                      </Badge>
-                      {domain.sslIssuer && (
-                        <div className="text-xs text-muted-foreground">
-                          Issuer: {domain.sslIssuer}
-                        </div>
-                      )}
-                    </div>
-                  </TableCell>
-                  <TableCell>{new Date(domain.createdAt).toLocaleDateString()}</TableCell>
-                  <TableCell className="text-right">
-                    <div className="flex justify-end gap-2">
-                      <button 
-                        onClick={() => window.open(`/dashboard/ssl?domain=${domain.domainName}`, '_blank')}
-                        className="text-green-600 hover:text-green-800"
-                        title="View SSL Certificate"
-                      >
-                        <Icons.shield className="size-4" />
-                      </button>
-                      <Link href={`/dashboard/domains/${domain.id}`}>
-                        <button 
-                          className="text-blue-600 hover:text-blue-800"
-                          title="Domain Settings"
-                        >
-                          <Icons.settings className="size-4" />
-                        </button>
-                      </Link>
-                      <button 
-                        onClick={() => setDomainToDelete(domain.id)}
-                        className="text-red-600 hover:text-red-800"
-                        title="Delete Domain"
-                      >
-                        <Icons.trash className="size-4" />
-                      </button>
-                    </div>
-                  </TableCell>
-                </TableRow>
-              );
-            })}
-          </TableBody>
-        </Table>
-      </CardContent>
-      
+                    </TableCell>
+                    <TableCell className="py-4 text-base font-medium">
+                      {domain.domainName}
+                    </TableCell>
+                    <TableCell className="py-4 text-base text-muted-foreground">
+                      {domain.provider}
+                    </TableCell>
+                    <TableCell className="py-4">
+                      <div className="flex items-center gap-3">
+                        <span className="text-base text-muted-foreground">
+                          {new Date(domain.expiresAt).toLocaleDateString('en-US', {
+                            month: 'short',
+                            day: 'numeric',
+                            year: 'numeric'
+                          })}
+                        </span>
+                        <Badge variant={expiryBadge.variant} className="px-3 py-1 text-sm">
+                          {expiryBadge.text}
+                        </Badge>
+                      </div>
+                    </TableCell>
+                    <TableCell className="py-4">
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button variant="ghost" size="default" className="size-10 p-0">
+                            <MoreHorizontal className="size-5" />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                          <DropdownMenuItem asChild>
+                            <Link href={`/dashboard/domains/${domain.id}`}>
+                              <Icons.settings className="mr-2 size-4" />
+                              Settings
+                            </Link>
+                          </DropdownMenuItem>
+                          <DropdownMenuItem
+                            onClick={() => setDomainToDelete(domain.id)}
+                            className="text-red-600"
+                          >
+                            <Icons.trash className="mr-2 size-4" />
+                            Delete
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
+            </TableBody>
+          </Table>
+        </div>
+      )}
+
+      {/* Summary */}
+      <div className="py-2 text-base text-muted-foreground">
+        Viewing {sortedDomains.length} of {domains.length} domains, with 3 fields visible in list
+      </div>
+
       {/* Delete Confirmation Dialog */}
       <AlertDialog open={!!domainToDelete} onOpenChange={() => setDomainToDelete(null)}>
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Delete Domain</AlertDialogTitle>
             <AlertDialogDescription>
-              Are you sure you want to delete this domain? This action cannot be undone and will remove all associated data including SSL certificates, uptime checks, and performance metrics.
+              Are you sure you want to delete this domain? This action cannot be undone.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
@@ -340,6 +362,6 @@ export function DomainsTable({ refreshTrigger }: DomainsTableProps) {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-    </Card>
+    </div>
   );
 } 

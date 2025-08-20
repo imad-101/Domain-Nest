@@ -100,51 +100,51 @@ export const features: FeatureLdg[] = [
 export const testimonials: TestimonialType[] = [
   {
     name: "Sarah Chen",
-    job: "DevOps Engineer",
+    job: "Senior DevOps Engineer",
     image: "https://randomuser.me/api/portraits/women/1.jpg",
     review:
-      "Domain Nest has completely transformed how we handle our infrastructure. The DNS management is intuitive, and the SSL monitoring has saved us from multiple certificate expiration issues. The bulk operations feature is a game-changer for managing our 50+ domains.",
+      "I've been using DomNest for about 8 months now and it's honestly made my life so much easier. Before this, I was juggling spreadsheets and sticky notes trying to keep track of SSL renewals. The automated alerts have already saved me twice from embarrassing certificate expirations. Worth every penny.",
   },
   {
     name: "Marcus Rodriguez",
-    job: "Web Developer",
+    job: "Freelance Web Developer",
     image: "https://randomuser.me/api/portraits/men/2.jpg",
     review:
-      "As a freelance developer managing multiple client domains, this platform has been invaluable. The uptime monitoring alerts me immediately when there are issues, and the WHOIS lookup feature saves me so much time. Highly recommended!",
+      "Running a one-person web dev shop means I'm constantly switching between client projects. DomNest keeps all my domains organized in one place, and the uptime monitoring gives me peace of mind when I'm focused on coding. My clients love getting proactive notifications too.",
   },
   {
     name: "Jennifer Kim",
-    job: "IT Manager",
+    job: "IT Director",
     image: "https://randomuser.me/api/portraits/women/3.jpg",
     review:
-      "Managing our company's domain portfolio used to be a nightmare. Now with this platform, everything is centralized and automated. The domain transfer process was incredibly smooth, and the analytics help us make informed decisions.",
+      "We had domains scattered across three different registrars with no central visibility. The migration to DomNest took some planning, but now our entire team can see domain status at a glance. The reporting features have been great for our quarterly reviews with leadership.",
   },
   {
     name: "Alex Thompson",
-    job: "System Administrator",
+    job: "Systems Administrator",
     image: "https://randomuser.me/api/portraits/men/4.jpg",
     review:
-      "The SSL certificate monitoring feature alone is worth the subscription. We never miss a renewal deadline anymore, and the dashboard gives us complete visibility into our domain health. Excellent platform!",
+      "Look, I'm not easily impressed by SaaS tools, but DomNest actually delivers. The DNS propagation checker has saved me hours of troubleshooting, and I love that I can manage everything from my phone when I'm on-call. Simple but powerful.",
   },
   {
     name: "Lisa Wang",
-    job: "Digital Marketing Manager",
+    job: "Marketing Operations Manager",
     image: "https://randomuser.me/api/portraits/women/5.jpg",
     review:
-      "Domain Nest has streamlined our entire online presence management. The bulk operations feature lets us update multiple domains simultaneously, and the uptime monitoring ensures our marketing campaigns never suffer from downtime.",
+      "As someone who's not super technical, I was worried about managing our campaign landing page domains. DomNest's interface is intuitive enough that I don't need to bug our dev team for every little DNS change. The bulk editing feature is a lifesaver during campaign launches.",
   },
   {
     name: "David Park",
-    job: "Startup Founder",
+    job: "Co-founder & CTO",
     image: "https://randomuser.me/api/portraits/men/6.jpg",
     review:
-      "As a startup, we needed a cost-effective solution to manage our domains professionally. This platform delivers enterprise-level features at an affordable price. The interface is clean and the support is excellent.",
+      "Early stage startup here - we're watching every dollar. DomNest gives us enterprise-level domain management without the enterprise price tag. The API integration with our deployment pipeline was surprisingly straightforward. Definitely recommend for other startups.",
   },
   {
     name: "Rachel Green",
-    job: "Agency Owner",
+    job: "Digital Agency Owner",
     image: "https://randomuser.me/api/portraits/women/7.jpg",
     review:
-      "Managing domains for multiple clients used to be chaotic. This platform has given us the tools to provide professional domain management services. The client dashboard features are perfect for our agency workflow.",
+      "Managing 40+ client domains used to be a nightmare of shared logins and forgotten renewals. DomNest's client portal feature lets us give customers visibility without exposing sensitive settings. Our account managers love how professional it makes us look.",
   },
 ];

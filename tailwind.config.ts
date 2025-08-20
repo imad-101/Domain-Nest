@@ -61,10 +61,10 @@ const config = {
         sm: "calc(var(--radius) - 4px)",
       },
       fontFamily: {
-        sans: ["var(--font-sans)", ...fontFamily.sans],
-        urban: ["var(--font-urban)", ...fontFamily.sans],
-        heading: ["var(--font-heading)", ...fontFamily.sans],
-        geist: ["var(--font-geist)", ...fontFamily.sans],
+        sans: ["Amaranth", ...fontFamily.sans],
+        urban: ["Concert One", ...fontFamily.sans],
+        heading: ["Concert One", ...fontFamily.sans],
+        geist: ["Amaranth", ...fontFamily.sans],
       },
       keyframes: {
         "accordion-down": {
