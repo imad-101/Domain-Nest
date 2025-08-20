@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -48,10 +48,6 @@ export default function SSLMonitorPage() {
     fetchDomains();
   }, []);
 
-  useEffect(() => {
-    calculateStats();
-  }, [domains]);
-
   const fetchDomains = async () => {
     try {
       const response = await fetch("/api/domains");
@@ -66,7 +62,46 @@ export default function SSLMonitorPage() {
     }
   };
 
-  const calculateStats = () => {
+  const getSSLDaysUntilExpiry = (sslExpiresAt: string | null) => {
+    if (!sslExpiresAt) return null;
+    const expiryDate = new Date(sslExpiresAt);
+    const now = new Date();
+    
+    expiryDate.setHours(0, 0, 0, 0);
+    now.setHours(0, 0, 0, 0);
+    
+    const diffTime = expiryDate.getTime() - now.getTime();
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    return diffDays;
+  };
+
+  const getSSLStatus = useCallback((domain: Domain) => {
+    if (!domain.sslStatus || domain.sslStatus === 'unknown') {
+      return { status: "unknown", color: "outline", text: "Not checked", priority: 5 };
+    }
+    
+    if (domain.sslStatus === 'error') {
+      return { status: "error", color: "destructive", text: "SSL Error", priority: 4 };
+    }
+
+    const daysUntilExpiry = getSSLDaysUntilExpiry(domain.sslExpiresAt || null);
+    
+    if (daysUntilExpiry === null) {
+      return { status: "unknown", color: "outline", text: "No SSL", priority: 5 };
+    }
+    
+    if (daysUntilExpiry < 0) {
+      return { status: "expired", color: "destructive", text: "Expired", priority: 1 };
+    } else if (daysUntilExpiry <= 7) {
+      return { status: "warning", color: "destructive", text: `${daysUntilExpiry} days`, priority: 2 };
+    } else if (daysUntilExpiry <= 30) {
+      return { status: "warning", color: "secondary", text: `${daysUntilExpiry} days`, priority: 3 };
+    } else {
+      return { status: "valid", color: "default", text: `${daysUntilExpiry} days`, priority: 6 };
+    }
+  }, []);
+
+  const calculateStats = useCallback(() => {
     const newStats: SSLStats = {
       total: domains.length,
       valid: 0,
@@ -97,46 +132,7 @@ export default function SSLMonitorPage() {
     });
 
     setStats(newStats);
-  };
-
-  const getSSLDaysUntilExpiry = (sslExpiresAt: string | null) => {
-    if (!sslExpiresAt) return null;
-    const expiryDate = new Date(sslExpiresAt);
-    const now = new Date();
-    
-    expiryDate.setHours(0, 0, 0, 0);
-    now.setHours(0, 0, 0, 0);
-    
-    const diffTime = expiryDate.getTime() - now.getTime();
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    return diffDays;
-  };
-
-  const getSSLStatus = (domain: Domain) => {
-    if (!domain.sslStatus || domain.sslStatus === 'unknown') {
-      return { status: "unknown", color: "outline", text: "Not checked", priority: 5 };
-    }
-    
-    if (domain.sslStatus === 'error') {
-      return { status: "error", color: "destructive", text: "SSL Error", priority: 4 };
-    }
-
-    const daysUntilExpiry = getSSLDaysUntilExpiry(domain.sslExpiresAt || null);
-    
-    if (daysUntilExpiry === null) {
-      return { status: "unknown", color: "outline", text: "No SSL", priority: 5 };
-    }
-    
-    if (daysUntilExpiry < 0) {
-      return { status: "expired", color: "destructive", text: "Expired", priority: 1 };
-    } else if (daysUntilExpiry <= 7) {
-      return { status: "warning", color: "destructive", text: `${daysUntilExpiry} days`, priority: 2 };
-    } else if (daysUntilExpiry <= 30) {
-      return { status: "warning", color: "secondary", text: `${daysUntilExpiry} days`, priority: 3 };
-    } else {
-      return { status: "valid", color: "default", text: `${daysUntilExpiry} days`, priority: 6 };
-    }
-  };
+  }, [domains, getSSLStatus]);
 
   const checkSSL = async (domainId: string) => {
     try {

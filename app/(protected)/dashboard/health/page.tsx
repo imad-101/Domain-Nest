@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -125,11 +125,7 @@ export default function HealthDashboardPage() {
     },
   } satisfies ChartConfig;
 
-  useEffect(() => {
-    fetchHealthData();
-  }, [timeRange, selectedDomain]);
-
-  const fetchHealthData = async () => {
+  const fetchHealthData = useCallback(async () => {
     try {
       const params = new URLSearchParams({
         timeRange,
@@ -146,7 +142,11 @@ export default function HealthDashboardPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [timeRange, selectedDomain]);
+
+  useEffect(() => {
+    fetchHealthData();
+  }, [fetchHealthData]);
 
   const runHealthCheck = async () => {
     setChecking(true);
