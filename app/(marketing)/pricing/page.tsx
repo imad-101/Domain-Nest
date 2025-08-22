@@ -10,9 +10,9 @@ export default function PricingPage() {
 
         {/* Features Card */}
         <div className="relative mb-12">
-          <div className="absolute -inset-4 rounded-3xl bg-gradient-to-r from-green-400 via-blue-400 via-pink-400 via-purple-400 to-yellow-400 opacity-30 blur-md"></div>
-          <div className="absolute -inset-2 rounded-2xl bg-gradient-to-r from-green-300 via-blue-300 via-pink-300 via-purple-300 to-yellow-300 opacity-40 blur-md"></div>
-          <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-green-300 via-blue-300 via-pink-300 via-purple-300 to-yellow-300 p-1 opacity-60"></div>
+          <div className="absolute -inset-4 rounded-3xl bg-gradient-to-r from-red-600 via-orange-500 via-yellow-400 to-red-600 opacity-40 blur-sm"></div>
+          <div className="absolute -inset-2 rounded-2xl bg-gradient-to-br from-orange-600 via-red-500 via-orange-400 to-yellow-500 opacity-50 "></div>
+          <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-orange-500 via-red-500 via-orange-400 via-yellow-400 to-orange-500 p-1 opacity-70"></div>
           <Card className="relative rounded-2xl bg-white p-12 shadow-sm">
             <div className="grid gap-12 md:grid-cols-2">
               {/* Left Column */}

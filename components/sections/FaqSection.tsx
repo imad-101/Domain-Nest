@@ -6,34 +6,44 @@ import { ChevronDown } from "lucide-react"
 
 const faqData = [
   {
-    question: "What is Pointer and who is it for?",
+    question: "What is Domain Nest and how does it help my business?",
     answer:
-      "Pointer is an AI-powered development platform designed for developers, teams, and organizations who want toaccelerate their coding workflow. It's perfect for both individual developers looking to enhance their productivity and teams seeking seamless collaboration tools.",
+      "Domain Nest is a comprehensive domain monitoring platform that helps businesses protect their online presence by tracking domain health, SSL certificates, DNS records, and security status. It prevents costly downtime by alerting you before issues affect your customers and provides detailed analytics to optimize your domain portfolio.",
   },
   {
-    question: "How does Pointer's AI code review work?",
+    question: "How often does Domain Nest check my domains?",
     answer:
-      "Our AI analyzes your code in real-time, providing intelligent suggestions for improvements, catching potential bugs, and ensuring best practices. It learns from your coding patterns and adapts to your team's standards, making code reviews faster and more consistent.",
+      "We monitor your domains 24/7 with checks every 5 minutes for critical metrics like uptime and SSL status. DNS changes are detected within minutes, and we provide real-time alerts via email, SMS, and webhooks so you're always the first to know about any issues.",
   },
   {
-    question: "Can I integrate Pointer with my existing tools?",
+    question: "What types of domain issues can Domain Nest detect?",
     answer:
-      "Yes! Pointer offers one-click integrations with popular development tools including GitHub, GitLab, VS Code, Slack, and many more. Our MCP connectivity allows you to easily manage and configure server access across your entire development stack.",
+      "Domain Nest monitors SSL certificate expiration, DNS record changes, domain expiration dates, website downtime, response time degradation, security vulnerabilities, subdomain hijacking attempts, and unauthorized DNS modifications. Our comprehensive monitoring ensures no critical issue goes unnoticed.",
   },
   {
-    question: "What's included in the free plan?",
+    question: "Can I monitor multiple domains and subdomains?",
     answer:
-      "The free plan includes real-time code suggestions, basic integrations, single MCP server connection, up to 2 AI coding agents, and Vercel deployments with Pointer branding. It's perfect for individual developers getting started.",
+      "Absolutely! Domain Nest supports unlimited domain and subdomain monitoring. You can organize domains by projects, set different monitoring rules for each, and get consolidated reports across your entire domain portfolio. Perfect for agencies, enterprises, and anyone managing multiple web properties.",
   },
   {
-    question: "How do parallel coding agents work?",
+    question: "How does the SSL certificate monitoring work?",
     answer:
-      "Our parallel coding agents can work on different parts of your codebase simultaneously, solving complex problems faster than traditional single-threaded approaches. You can launch multiple agents to handle different tasks like bug fixes, feature development, and code optimization concurrently.",
+      "Our SSL monitoring tracks certificate expiration dates, validates certificate chains, monitors for weak encryption, and alerts you before certificates expire. We check SSL health continuously and provide detailed reports on certificate status, helping you maintain secure connections and avoid browser security warnings.",
   },
   {
-    question: "Is my code secure with Pointer?",
+    question: "What happens when Domain Nest detects an issue?",
     answer:
-      "Absolutely. We use enterprise-grade security measures including end-to-end encryption, secure data transmission, and compliance with industry standards. Your code never leaves your secure environment without your explicit permission, and we offer on-premises deployment options for enterprise customers.",
+      "When an issue is detected, you'll receive instant notifications through your preferred channels (email, SMS, Slack, Discord, or webhooks). Our detailed incident reports help you quickly diagnose problems, and our analytics dashboard provides insights to prevent future issues. You can also set up escalation rules for critical domains.",
+  },
+  {
+    question: "Is Domain Nest suitable for agencies managing client domains?",
+    answer:
+      "Yes! Domain Nest is perfect for agencies and freelancers. You can organize client domains into separate projects, provide branded monitoring reports, set up white-label notifications, and give clients read-only access to their domain health dashboards. Our multi-tenant architecture keeps everything organized and professional.",
+  },
+  {
+    question: "How secure is my domain data with Domain Nest?",
+    answer:
+      "Security is our top priority. All data is encrypted in transit and at rest, we use enterprise-grade infrastructure, and we never store sensitive credentials. Our monitoring is read-only and non-intrusive. We're SOC 2 compliant and follow industry best practices to protect your domain information.",
   },
 ]
 
@@ -58,7 +68,7 @@ const FAQItem = ({ question, answer, isOpen, onToggle }: FAQItemProps) => {
         <div className="flex-1 text-foreground text-base font-medium leading-6 break-words">{question}</div>
         <div className="flex justify-center items-center">
           <ChevronDown
-            className={`w-6 h-6 text-muted-foreground-dark transition-all duration-500 ease-out ${isOpen ? "rotate-180 scale-110" : "rotate-0 scale-100"}`}
+            className={`w-6 h-6 text-muted-foreground transition-all duration-500 ease-out ${isOpen ? "rotate-180 scale-110" : "rotate-0 scale-100"}`}
           />
         </div>
       </div>
@@ -99,7 +109,7 @@ export function FAQSection() {
             Frequently Asked Questions
           </h2>
           <p className="self-stretch text-center text-muted-foreground text-sm font-medium leading-[18.20px] break-words">
-            Everything you need to know about Pointer and how it can transform your development workflow
+            Everything you need to know about Domain Nest and how it protects your online presence
           </p>
         </div>
       </div>

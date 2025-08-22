@@ -2,7 +2,6 @@ import "@/styles/globals.css";
 
 import { SessionProvider } from "next-auth/react";
 import { ThemeProvider } from "next-themes";
-
 import { cn, constructMetadata } from "@/lib/utils";
 import { Toaster } from "@/components/ui/sonner";
 
@@ -32,7 +31,11 @@ export default function RootLayout({ children }: RootLayoutProps) {
             enableSystem
             disableTransitionOnChange
           >
-            <ModalProvider>{children}</ModalProvider>
+            <ModalProvider>
+
+              {children}
+
+              </ModalProvider>
             {/* <Analytics /> */}
             <Toaster richColors closeButton />
             <TailwindIndicator />

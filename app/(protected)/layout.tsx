@@ -7,7 +7,6 @@ import {
   DashboardSidebar,
   MobileSheetSidebar,
 } from "@/components/layout/dashboard-sidebar";
-import { ModeToggle } from "@/components/layout/mode-toggle";
 import { UserAccountNav } from "@/components/layout/user-account-nav";
 import MaxWidthWrapper from "@/components/shared/max-width-wrapper";
 
@@ -25,8 +24,8 @@ export default async function Dashboard({ children }: ProtectedLayoutProps) {
       <DashboardSidebar links={sidebarLinks} />
 
       <div className="relative z-10 flex flex-1 flex-col">
-        <header className="sticky top-0 z-30 flex h-14 border-b bg-background/95 px-4 backdrop-blur supports-[backdrop-filter]:bg-background/60 lg:h-[60px] xl:px-8">
-          <MaxWidthWrapper className="flex max-w-7xl items-center gap-x-3 px-0">
+        <header className="sticky top-0 z-30 flex h-14 border-b border-border bg-background/98 px-2 sm:px-4 backdrop-blur-sm supports-[backdrop-filter]:bg-background/95 lg:h-[60px] xl:px-8">
+          <MaxWidthWrapper className="flex max-w-7xl items-center gap-x-2 sm:gap-x-3 px-0">
             <MobileSheetSidebar links={sidebarLinks} />
 
             {/* Logo for mobile/header */}
@@ -45,12 +44,11 @@ export default async function Dashboard({ children }: ProtectedLayoutProps) {
               {/* Empty space - removed SearchCommand */}
             </div>
 
-            <ModeToggle />
             <UserAccountNav />
           </MaxWidthWrapper>
         </header>
 
-        <main className="relative z-0 flex-1 p-4 xl:px-8">
+        <main className="relative z-0 flex-1 p-2 sm:p-4 xl:px-8 bg-muted/20">
           <MaxWidthWrapper className="relative z-0 flex h-full max-w-7xl flex-col gap-4 px-0 lg:gap-6">
             {children}
           </MaxWidthWrapper>
