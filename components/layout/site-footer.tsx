@@ -3,7 +3,6 @@ import Link from "next/link";
 
 import { footerLinks, siteConfig } from "@/config/site";
 import { cn } from "@/lib/utils";
-import { ModeToggle } from "@/components/layout/mode-toggle";
 
 import { Icons } from "../shared/icons";
 
@@ -77,7 +76,6 @@ export function SiteFooter({ className }: React.HTMLAttributes<HTMLElement>) {
             >
               <Icons.gitHub className="size-5" />
             </Link>
-            <ModeToggle />
           </div>
         </div>
       </div>

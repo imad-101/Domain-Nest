@@ -177,22 +177,22 @@ export function DomainsTable({ refreshTrigger, onDomainAdded }: DomainsTableProp
   return (
     <div className="space-y-6">
       {/* Filter Controls */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-6">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:gap-6">
           <div>
-            <label className="mb-3 block text-sm font-medium text-muted-foreground">Filter</label>
+            <label className="mb-3 block text-sm font-medium text-foreground">Filter</label>
             <Input
-              placeholder="Search"
+              placeholder="Search domains..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="h-11 w-72"
+              className="h-11 w-full sm:w-72 border-border bg-background"
             />
           </div>
           
-          <div>
-            <label className="mb-3 block text-sm font-medium text-muted-foreground">Fields</label>
+          <div className="hidden sm:block">
+            <label className="mb-3 block text-sm font-medium text-foreground">Fields</label>
             <Select value="domain-registrar-expiry" onValueChange={() => {}}>
-              <SelectTrigger className="h-11 w-72">
+              <SelectTrigger className="h-11 w-72 border-border bg-background">
                 <SelectValue placeholder="Domain Name, Registrar, Expiry Date" />
               </SelectTrigger>
               <SelectContent>
@@ -207,137 +207,216 @@ export function DomainsTable({ refreshTrigger, onDomainAdded }: DomainsTableProp
         
         </div>
         
-        <DomainForm onDomainAdded={onDomainAdded} />
+        <div className="w-full sm:w-auto">
+          <DomainForm onDomainAdded={onDomainAdded} />
+        </div>
       </div>
 
       {/* Domains Table */}
       {sortedDomains.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-16 text-center">
-          <Icons.search className="mb-6 size-16 text-muted-foreground" />
-          <h3 className="mb-3 text-xl font-semibold">No domains found</h3>
+          <Icons.search className="mb-6 size-16 text-muted-foreground/60" />
+          <h3 className="mb-3 text-xl font-semibold text-foreground">No domains found</h3>
           <p className="text-base text-muted-foreground">
             {searchTerm ? "Try adjusting your search terms" : "Add your first domain to get started"}
           </p>
         </div>
       ) : (
-        <div className="rounded-md border">
-          <Table>
-            <TableHeader>
-              <TableRow className="h-14">
-                <TableHead className="w-16"></TableHead>
-                <TableHead>
-                  <Button
-                    variant="ghost"
-                    onClick={() => handleSort("domain")}
-                    className="h-auto p-0 text-base font-semibold hover:bg-transparent"
-                  >
-                    Domain
-                    <ArrowUpDown className="ml-2 size-5" />
-                  </Button>
-                </TableHead>
-                <TableHead>
-                  <Button
-                    variant="ghost"
-                    onClick={() => handleSort("registrar")}
-                    className="h-auto p-0 text-base font-semibold hover:bg-transparent"
-                  >
-                    Registrar
-                    <ArrowUpDown className="ml-2 size-5" />
-                  </Button>
-                </TableHead>
-                <TableHead>
-                  <Button
-                    variant="ghost"
-                    onClick={() => handleSort("expiry")}
-                    className="h-auto p-0 text-base font-semibold hover:bg-transparent"
-                  >
-                    Expiry
-                    <ArrowUpDown className="ml-2 size-5" />
-                  </Button>
-                </TableHead>
-                <TableHead className="w-16"></TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {sortedDomains.map((domain) => {
-                const expiryBadge = getExpiryBadge(domain.expiresAt);
-                const domainIcon = domain.domainName.charAt(0).toUpperCase();
-                
-                return (
-                  <TableRow key={domain.id} className="h-16 hover:bg-muted/50">
-                    <TableCell className="py-4">
+        <>
+          {/* Desktop Table View */}
+          <div className="hidden md:block rounded-lg border border-border bg-card">
+            <Table>
+              <TableHeader>
+                <TableRow className="h-14 border-b border-border">
+                  <TableHead className="w-16"></TableHead>
+                  <TableHead>
+                    <Button
+                      variant="ghost"
+                      onClick={() => handleSort("domain")}
+                      className="h-auto p-0 text-base font-semibold text-foreground hover:bg-transparent hover:text-primary"
+                    >
+                      Domain
+                      <ArrowUpDown className="ml-2 size-5" />
+                    </Button>
+                  </TableHead>
+                  <TableHead>
+                    <Button
+                      variant="ghost"
+                      onClick={() => handleSort("registrar")}
+                      className="h-auto p-0 text-base font-semibold text-foreground hover:bg-transparent hover:text-primary"
+                    >
+                      Registrar
+                      <ArrowUpDown className="ml-2 size-5" />
+                    </Button>
+                  </TableHead>
+                  <TableHead>
+                    <Button
+                      variant="ghost"
+                      onClick={() => handleSort("expiry")}
+                      className="h-auto p-0 text-base font-semibold text-foreground hover:bg-transparent hover:text-primary"
+                    >
+                      Expiry
+                      <ArrowUpDown className="ml-2 size-5" />
+                    </Button>
+                  </TableHead>
+                  <TableHead className="w-16"></TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {sortedDomains.map((domain) => {
+                  const expiryBadge = getExpiryBadge(domain.expiresAt);
+                  const domainIcon = domain.domainName.charAt(0).toUpperCase();
+                  
+                  return (
+                    <TableRow key={domain.id} className="h-16 hover:bg-muted/30 border-b border-border/50">
+                      <TableCell className="py-4">
+                        <div className="flex size-10 items-center justify-center overflow-hidden rounded-full text-sm font-medium">
+                          <img
+                            src={`https://www.google.com/s2/favicons?domain=${domain.domainName}&sz=32`}
+                            alt={`${domain.domainName} favicon`}
+                            className="size-8 rounded"
+                            onError={(e) => {
+                              const target = e.target as HTMLImageElement;
+                              target.style.display = 'none';
+                              const parent = target.parentElement;
+                              if (parent) {
+                                parent.innerHTML = domainIcon;
+                                parent.className = "w-10 h-10 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center text-sm font-medium text-primary";
+                              }
+                            }}
+                          />
+                        </div>
+                      </TableCell>
+                      <TableCell className="py-4 text-base font-medium text-foreground">
+                        {domain.domainName}
+                      </TableCell>
+                      <TableCell className="py-4 text-base text-foreground/70">
+                        {domain.provider}
+                      </TableCell>
+                      <TableCell className="py-4">
+                        <div className="flex items-center gap-3">
+                          <span className="text-base text-foreground/70">
+                            {new Date(domain.expiresAt).toLocaleDateString('en-US', {
+                              month: 'short',
+                              day: 'numeric',
+                              year: 'numeric'
+                            })}
+                          </span>
+                          <Badge variant={expiryBadge.variant} className="px-3 py-1 text-sm font-medium">
+                            {expiryBadge.text}
+                          </Badge>
+                        </div>
+                      </TableCell>
+                      <TableCell className="py-4">
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" size="default" className="size-10 p-0 hover:bg-muted/50">
+                              <MoreHorizontal className="size-5 text-foreground/60" />
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end">
+                            <DropdownMenuItem asChild>
+                              <Link href={`/dashboard/domains/${domain.id}`}>
+                                <Icons.settings className="mr-2 size-4" />
+                                Settings
+                              </Link>
+                            </DropdownMenuItem>
+                            <DropdownMenuItem
+                              onClick={() => setDomainToDelete(domain.id)}
+                              className="text-red-600"
+                            >
+                              <Icons.trash className="mr-2 size-4" />
+                              Delete
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
+              </TableBody>
+            </Table>
+          </div>
+
+          {/* Mobile Card View */}
+          <div className="md:hidden space-y-4">
+            {sortedDomains.map((domain) => {
+              const expiryBadge = getExpiryBadge(domain.expiresAt);
+              const domainIcon = domain.domainName.charAt(0).toUpperCase();
+              
+              return (
+                <div key={domain.id} className="rounded-lg border border-border bg-card p-4 space-y-3">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
                       <div className="flex size-10 items-center justify-center overflow-hidden rounded-full text-sm font-medium">
                         <img
                           src={`https://www.google.com/s2/favicons?domain=${domain.domainName}&sz=32`}
                           alt={`${domain.domainName} favicon`}
                           className="size-8 rounded"
                           onError={(e) => {
-                            // Fallback to letter if favicon fails to load
                             const target = e.target as HTMLImageElement;
                             target.style.display = 'none';
                             const parent = target.parentElement;
                             if (parent) {
                               parent.innerHTML = domainIcon;
-                              parent.className = "w-10 h-10 rounded-full bg-secondary flex items-center justify-center text-sm font-medium";
+                              parent.className = "w-10 h-10 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center text-sm font-medium text-primary";
                             }
                           }}
                         />
                       </div>
-                    </TableCell>
-                    <TableCell className="py-4 text-base font-medium">
-                      {domain.domainName}
-                    </TableCell>
-                    <TableCell className="py-4 text-base text-muted-foreground">
-                      {domain.provider}
-                    </TableCell>
-                    <TableCell className="py-4">
-                      <div className="flex items-center gap-3">
-                        <span className="text-base text-muted-foreground">
-                          {new Date(domain.expiresAt).toLocaleDateString('en-US', {
-                            month: 'short',
-                            day: 'numeric',
-                            year: 'numeric'
-                          })}
-                        </span>
-                        <Badge variant={expiryBadge.variant} className="px-3 py-1 text-sm">
-                          {expiryBadge.text}
-                        </Badge>
+                      <div>
+                        <h3 className="text-base font-medium text-foreground">{domain.domainName}</h3>
+                        <p className="text-sm text-foreground/70">{domain.provider}</p>
                       </div>
-                    </TableCell>
-                    <TableCell className="py-4">
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button variant="ghost" size="default" className="size-10 p-0">
-                            <MoreHorizontal className="size-5" />
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                          <DropdownMenuItem asChild>
-                            <Link href={`/dashboard/domains/${domain.id}`}>
-                              <Icons.settings className="mr-2 size-4" />
-                              Settings
-                            </Link>
-                          </DropdownMenuItem>
-                          <DropdownMenuItem
-                            onClick={() => setDomainToDelete(domain.id)}
-                            className="text-red-600"
-                          >
-                            <Icons.trash className="mr-2 size-4" />
-                            Delete
-                          </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                    </TableCell>
-                  </TableRow>
-                );
-              })}
-            </TableBody>
-          </Table>
-        </div>
+                    </div>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button variant="ghost" size="default" className="size-8 p-0 hover:bg-muted/50">
+                          <MoreHorizontal className="size-4 text-foreground/60" />
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end">
+                        <DropdownMenuItem asChild>
+                          <Link href={`/dashboard/domains/${domain.id}`}>
+                            <Icons.settings className="mr-2 size-4" />
+                            Settings
+                          </Link>
+                        </DropdownMenuItem>
+                        <DropdownMenuItem
+                          onClick={() => setDomainToDelete(domain.id)}
+                          className="text-red-600"
+                        >
+                          <Icons.trash className="mr-2 size-4" />
+                          Delete
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </div>
+                  
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-xs text-foreground/70 font-medium uppercase tracking-wide">Expires</p>
+                      <p className="text-sm text-foreground/70">
+                        {new Date(domain.expiresAt).toLocaleDateString('en-US', {
+                          month: 'short',
+                          day: 'numeric',
+                          year: 'numeric'
+                        })}
+                      </p>
+                    </div>
+                    <Badge variant={expiryBadge.variant} className="px-3 py-1 text-sm font-medium">
+                      {expiryBadge.text}
+                    </Badge>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </>
       )}
 
       {/* Summary */}
-      <div className="py-2 text-base text-muted-foreground">
+      <div className="py-2 text-base text-foreground/70">
         Viewing {sortedDomains.length} of {domains.length} domains, with 3 fields visible in list
       </div>
 

@@ -72,17 +72,18 @@ export function DomainForm({ onDomainAdded }: DomainFormProps) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="secondary" className="premium-hover pulse-glow shadow-lg">
+        <Button variant="secondary" className="premium-hover pulse-glow shadow-lg w-full sm:w-auto">
           <Icons.add className="mr-2 size-4" />
-          Add Domain
+          <span className="hidden sm:inline">Add Domain</span>
+          <span className="sm:hidden">Add</span>
         </Button>
       </DialogTrigger>
-      <DialogContent className="premium-card luxury-shadow sm:max-w-[500px]">
+      <DialogContent className="premium-card luxury-shadow mx-4 sm:mx-0 sm:max-w-[500px]">
         <DialogHeader className="pb-4 text-center">
-          <DialogTitle className="premium-text-gradient text-2xl font-bold">
+          <DialogTitle className="premium-text-gradient text-xl sm:text-2xl font-bold">
             Add New Domain
           </DialogTitle>
-          <DialogDescription className="text-base font-medium">
+          <DialogDescription className="text-sm sm:text-base font-medium">
             Add a domain to your portfolio for management and monitoring.
           </DialogDescription>
         </DialogHeader>
@@ -102,11 +103,11 @@ export function DomainForm({ onDomainAdded }: DomainFormProps) {
             )}
           </div>
 
-          <div className="flex justify-end space-x-3 pt-4">
-            <Button type="button" variant="outline" onClick={() => setOpen(false)} className="px-6">
+          <div className="flex flex-col sm:flex-row justify-end space-y-3 sm:space-y-0 sm:space-x-3 pt-4">
+            <Button type="button" variant="outline" onClick={() => setOpen(false)} className="px-6 order-2 sm:order-1">
               Cancel
             </Button>
-            <Button type="submit" variant="secondary" disabled={isPending} className="premium-hover px-6">
+            <Button type="submit" variant="secondary" disabled={isPending} className="premium-hover px-6 order-1 sm:order-2">
               {isPending ? (
                 <>
                   <Icons.spinner className="mr-2 size-4 animate-spin" />
