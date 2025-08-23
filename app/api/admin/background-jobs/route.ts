@@ -113,8 +113,7 @@ export async function GET(request: NextRequest) {
         where: {
           OR: [
             { lastSslCheck: { lt: sslStaleThreshold } },
-            { lastSslCheck: null },
-            { sslStatus: null }
+            { lastSslCheck: null }
           ]
         }
       }),

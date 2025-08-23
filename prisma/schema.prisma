@@ -52,6 +52,10 @@ model User {
   stripeSubscriptionId   String?   @unique @map("stripe_subscription_id")
   stripePriceId          String?   @map("stripe_price_id")
   stripeCurrentPeriodEnd DateTime? @map("stripe_current_period_end")
+  lemonSqueezyCustomerId String?   @unique @map("lemonsqueezy_customer_id")
+  lemonSqueezySubscriptionId String? @unique @map("lemonsqueezy_subscription_id")
+  lemonSqueezyVariantId  String?   @map("lemonsqueezy_variant_id")
+  lemonSqueezyCurrentPeriodEnd DateTime? @map("lemonsqueezy_current_period_end")
   accounts               Account[]
   domains                Domain[]
   sessions               Session[]
@@ -72,10 +76,7 @@ model Domain {
   registrar     String?   @map("registrar")
   nameservers   String?   @map("nameservers") // JSON string of nameservers
   
-  // SSL monitoring fields
-  sslExpiresAt  DateTime? @map("ssl_expires_at")
-  sslIssuer     String?   @map("ssl_issuer")
-  sslStatus     String?   @default("unknown") @map("ssl_status")
+  // SSL monitoring fields - real-time fetching
   lastSslCheck  DateTime? @map("last_ssl_check")
   
   // Health monitoring fields

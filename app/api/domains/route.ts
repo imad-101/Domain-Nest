@@ -29,9 +29,6 @@ export async function GET(request: NextRequest) {
         provider: domain.provider,
         expiresAt: domain.expiresAt,
         createdAt: domain.createdAt,
-        sslExpiresAt: domain.sslExpiresAt,
-        sslIssuer: domain.sslIssuer,
-        sslStatus: domain.sslStatus,
         lastSslCheck: domain.lastSslCheck,
       })),
     });

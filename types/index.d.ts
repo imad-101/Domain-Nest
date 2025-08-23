@@ -48,9 +48,9 @@ export type SubscriptionPlan = {
     monthly: number;
     yearly: number;
   };
-  stripeIds: {
-    monthly: string | null;
-    yearly: string | null;
+  lemonSqueezyIds: {
+    variantId: string | null;
+    productId: string | null;
   };
 };
 
@@ -58,8 +58,10 @@ export type UserSubscriptionPlan = SubscriptionPlan &
   Pick<User, "stripeCustomerId" | "stripeSubscriptionId" | "stripePriceId"> & {
     stripeCurrentPeriodEnd: number;
     isPaid: boolean;
-    interval: "month" | "year" | null;
+    interval: "month" | "year" | "lifetime" | null;
     isCanceled?: boolean;
+    lemonSqueezyCustomerId?: string | null;
+    lemonSqueezySubscriptionId?: string | null;
   };
 
 // compare plans

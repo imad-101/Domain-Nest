@@ -98,12 +98,12 @@ export function SupportContactForm({ onClose }: SupportContactFormProps) {
           <div>
             <h3 className="font-medium text-blue-900">Talk directly to the founder</h3>
             <a 
-              href="https://x.com/your_handle" 
+              href="https://x.com/imaduddin_101" 
               target="_blank" 
               rel="noopener noreferrer"
               className="font-medium text-blue-600 hover:text-blue-800"
             >
-              @your_handle on X (Twitter)
+            X (Twitter)
             </a>
           </div>
         </div>

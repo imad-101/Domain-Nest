@@ -2,7 +2,6 @@
 // TODO: Fix this when we turn strict mode on.
 import { pricingData } from "@/config/subscriptions";
 import { prisma } from "@/lib/db";
-import { stripe } from "@/lib/stripe";
 import { UserSubscriptionPlan } from "types";
 
 export async function getUserSubscriptionPlan(
@@ -19,6 +18,10 @@ export async function getUserSubscriptionPlan(
       stripeCurrentPeriodEnd: true,
       stripeCustomerId: true,
       stripePriceId: true,
+      lemonSqueezyCustomerId: true,
+      lemonSqueezySubscriptionId: true,
+      lemonSqueezyVariantId: true,
+      lemonSqueezyCurrentPeriodEnd: true,
     },
   })
 
@@ -26,40 +29,39 @@ export async function getUserSubscriptionPlan(
     throw new Error("User not found")
   }
 
-  // Check if user is on a paid plan.
-  const isPaid =
-    user.stripePriceId &&
-    user.stripeCurrentPeriodEnd?.getTime() + 86_400_000 > Date.now() ? true : false;
+  // Check if user has lifetime access (Lemon Squeezy or legacy Stripe)
+  const hasLifetimeAccess = user.lemonSqueezyVariantId || (user.stripePriceId && user.stripeCurrentPeriodEnd);
+  
+  // Check if user is on a paid plan
+  const isPaid = hasLifetimeAccess || (
+    user.lemonSqueezyCurrentPeriodEnd?.getTime() + 86_400_000 > Date.now()
+  );
 
   // Find the pricing data corresponding to the user's plan
-  const userPlan =
-    pricingData.find((plan) => plan.stripeIds.monthly === user.stripePriceId) ||
-    pricingData.find((plan) => plan.stripeIds.yearly === user.stripePriceId);
+  const userPlan = pricingData.find((plan) => 
+    plan.lemonSqueezyIds.variantId === user.lemonSqueezyVariantId
+  );
 
   const plan = isPaid && userPlan ? userPlan : pricingData[0]
 
-  const interval = isPaid
-    ? userPlan?.stripeIds.monthly === user.stripePriceId
-      ? "month"
-      : userPlan?.stripeIds.yearly === user.stripePriceId
-      ? "year"
-      : null
+  // Determine interval
+  const interval = isPaid && userPlan
+    ? userPlan.title === "Lifetime" 
+      ? "lifetime"
+      : "month" // Default for Lemon Squeezy
     : null;
 
-  let isCanceled = false;
-  if (isPaid && user.stripeSubscriptionId) {
-    const stripePlan = await stripe.subscriptions.retrieve(
-      user.stripeSubscriptionId
-    )
-    isCanceled = stripePlan.cancel_at_period_end
-  }
+  // For Lemon Squeezy, we don't have cancellation status in the same way
+  const isCanceled = false;
 
   return {
     ...plan,
     ...user,
-    stripeCurrentPeriodEnd: user.stripeCurrentPeriodEnd?.getTime(),
+    stripeCurrentPeriodEnd: user.stripeCurrentPeriodEnd?.getTime() || user.lemonSqueezyCurrentPeriodEnd?.getTime(),
     isPaid,
     interval,
-    isCanceled
+    isCanceled,
+    lemonSqueezyCustomerId: user.lemonSqueezyCustomerId,
+    lemonSqueezySubscriptionId: user.lemonSqueezySubscriptionId,
   }
 }

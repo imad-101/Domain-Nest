@@ -80,15 +80,11 @@ export async function POST(request: NextRequest) {
       ? uptimeChecks.reduce((sum, check) => sum + (check.responseTime || 0), 0) / uptimeChecks.length
       : healthResult.responseTime;
 
-    const sslValidDays = domain.sslExpiresAt 
-      ? Math.ceil((domain.sslExpiresAt.getTime() - Date.now()) / (1000 * 60 * 60 * 24))
-      : 0;
-
     const errorRate = uptimeChecks.length > 0
       ? uptimeChecks.filter(check => !check.isUp).length / uptimeChecks.length
       : healthResult.isUp ? 0 : 1;
 
-    const healthScore = calculateHealthScore(uptimePercentage, avgResponseTime, sslValidDays, errorRate);
+    const healthScore = calculateHealthScore(uptimePercentage, avgResponseTime, 0, errorRate);
 
     // Update domain with latest health data
     await prisma.domain.update({
@@ -193,15 +189,11 @@ export async function PUT(request: NextRequest) {
           ? uptimeChecks.reduce((sum, check) => sum + (check.responseTime || 0), 0) / uptimeChecks.length
           : healthResult.responseTime;
 
-        const sslValidDays = domain.sslExpiresAt 
-          ? Math.ceil((domain.sslExpiresAt.getTime() - Date.now()) / (1000 * 60 * 60 * 24))
-          : 0;
-
         const errorRate = uptimeChecks.length > 0
           ? uptimeChecks.filter(check => !check.isUp).length / uptimeChecks.length
           : healthResult.isUp ? 0 : 1;
 
-        const healthScore = calculateHealthScore(uptimePercentage, avgResponseTime, sslValidDays, errorRate);
+        const healthScore = calculateHealthScore(uptimePercentage, avgResponseTime, 0, errorRate);
 
         await prisma.domain.update({
           where: { id: domain.id },
