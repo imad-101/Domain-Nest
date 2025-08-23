@@ -11,7 +11,7 @@ export default function HeroLanding() {
     <section className="space-y-6 py-12 sm:py-20 lg:py-20 ">
       <div className="container flex max-w-5xl flex-col items-center gap-5 text-center">
         <Link
-          href="/pricing"
+          href="/login"
           className={cn(
             buttonVariants({ variant: "outline", size: "sm", rounded: "full" }),
             "px-4",
@@ -40,7 +40,7 @@ export default function HeroLanding() {
           style={{ animationDelay: "0.4s", animationFillMode: "forwards" }}
         >
           <Link
-            href="/pricing"
+            href="/login"
             prefetch={true}
             className={cn(
               buttonVariants({ size: "lg", rounded: "full" }),

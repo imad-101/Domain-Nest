@@ -25,10 +25,15 @@ interface Domain {
   provider: string;
   expiresAt: string;
   createdAt: string;
-  sslExpiresAt?: string | null;
-  sslIssuer?: string | null;
-  sslStatus?: string | null;
   lastSslCheck?: string | null;
+}
+
+interface SSLData {
+  status: string;
+  issuer: string | null;
+  expiresAt: string | null;
+  isValid: boolean;
+  daysUntilExpiry: number | null;
 }
 
 interface DomainsGridProps {
@@ -153,40 +158,40 @@ export function DomainsGrid({ refreshTrigger, onDomainAdded }: DomainsGridProps)
             const expiryBadge = getExpiryBadge(domain.expiresAt);
             
             return (
-              <Card key={domain.id} className="transition-shadow hover:shadow-md">
-                <CardHeader className="pb-3">
-                  <div className="flex items-center justify-between">
-                    <CardTitle className="text-lg">{domain.domainName}</CardTitle>
-                    <Badge variant={expiryBadge.variant}>
-                      {expiryBadge.text}
-                    </Badge>
-                  </div>
-                  <p className="text-sm text-muted-foreground">{domain.provider}</p>
-                </CardHeader>
-                <CardContent>
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm text-muted-foreground">
-                      Added {new Date(domain.createdAt).toLocaleDateString()}
-                    </span>
-                    <div className="flex items-center gap-2">
-                      <Link href={`/dashboard/domains/${domain.id}`}>
-                        <Button variant="outline" size="sm">
-                          <Icons.settings className="mr-1 size-4" />
-                          Settings
-                        </Button>
-                      </Link>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => setDomainToDelete(domain.id)}
-                        className="text-red-600 hover:text-red-700"
-                      >
-                        <Icons.trash className="size-4" />
-                      </Button>
+              <Link href={`/dashboard/domains/${domain.id}`} key={domain.id}>
+                <Card className="transition-shadow hover:shadow-md cursor-pointer hover:border-primary/50">
+                  <CardHeader className="pb-3">
+                    <div className="flex items-center justify-between">
+                      <CardTitle className="text-lg hover:text-primary transition-colors">{domain.domainName}</CardTitle>
+                      <Badge variant={expiryBadge.variant}>
+                        {expiryBadge.text}
+                      </Badge>
                     </div>
-                  </div>
-                </CardContent>
-              </Card>
+                    <p className="text-sm text-muted-foreground">{domain.provider}</p>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm text-muted-foreground">
+                        Added {new Date(domain.createdAt).toLocaleDateString()}
+                      </span>
+                      <div className="flex items-center gap-2">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            setDomainToDelete(domain.id);
+                          }}
+                          className="text-red-600 hover:text-red-700"
+                        >
+                          <Icons.trash className="size-4" />
+                        </Button>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </Link>
             );
           })}
         </div>

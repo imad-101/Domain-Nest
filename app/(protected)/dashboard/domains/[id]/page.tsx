@@ -3,6 +3,8 @@ import { getCurrentUser } from "@/lib/session";
 import { prisma } from "@/lib/db";
 import { constructMetadata } from "@/lib/utils";
 import { DashboardHeader } from "@/components/dashboard/header";
+import { DomainSSLCard } from "@/components/dashboard/domain-ssl-card";
+import { DomainDNSCard } from "@/components/dashboard/domain-dns-card";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -53,21 +55,7 @@ export default async function DomainSettingsPage({ params }: DomainSettingsPageP
     return Math.ceil((expiry.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
   };
 
-  const getSSLStatus = () => {
-    if (!domain.sslStatus) return { text: "Unknown", color: "secondary" };
-    
-    if (domain.sslStatus === "valid") {
-      const sslDays = domain.sslExpiresAt ? getDaysUntilExpiry(domain.sslExpiresAt) : 0;
-      if (sslDays > 30) return { text: "Valid", color: "default" };
-      if (sslDays > 7) return { text: "Expires Soon", color: "secondary" };
-      return { text: "Critical", color: "destructive" };
-    }
-    
-    return { text: "Invalid", color: "destructive" };
-  };
-
   const daysUntilExpiry = getDaysUntilExpiry(domain.expiresAt);
-  const sslStatus = getSSLStatus();
 
   return (
     <>
@@ -93,7 +81,7 @@ export default async function DomainSettingsPage({ params }: DomainSettingsPageP
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
               <div>
                 <label className="text-sm font-medium text-muted-foreground">Domain Name</label>
                 <p className="text-lg font-semibold">{domain.domainName}</p>
@@ -108,12 +96,6 @@ export default async function DomainSettingsPage({ params }: DomainSettingsPageP
                   {daysUntilExpiry < 0 ? "Expired" : `${daysUntilExpiry} days left`}
                 </Badge>
               </div>
-              <div>
-                <label className="text-sm font-medium text-muted-foreground">SSL Status</label>
-                <Badge variant={sslStatus.color as "default" | "secondary" | "destructive"}>
-                  {sslStatus.text}
-                </Badge>
-              </div>
             </div>
             
             <div className="grid grid-cols-1 gap-4 pt-4 md:grid-cols-2">
@@ -121,15 +103,33 @@ export default async function DomainSettingsPage({ params }: DomainSettingsPageP
                 <label className="text-sm font-medium text-muted-foreground">Domain Expires</label>
                 <p className="text-lg">{new Date(domain.expiresAt).toLocaleDateString()}</p>
               </div>
-              {domain.sslExpiresAt && (
-                <div>
-                  <label className="text-sm font-medium text-muted-foreground">SSL Expires</label>
-                  <p className="text-lg">{new Date(domain.sslExpiresAt).toLocaleDateString()}</p>
-                </div>
-              )}
+              <div>
+                <label className="text-sm font-medium text-muted-foreground">Added On</label>
+                <p className="text-lg">{new Date(domain.createdAt).toLocaleDateString()}</p>
+              </div>
             </div>
           </CardContent>
         </Card>
+
+        {/* SSL Certificate Information */}
+        <DomainSSLCard domain={{
+          id: domain.id,
+          domainName: domain.domainName,
+          provider: domain.provider,
+          expiresAt: domain.expiresAt.toISOString(),
+          createdAt: domain.createdAt.toISOString(),
+          lastSslCheck: domain.lastSslCheck?.toISOString() || null,
+        }} />
+
+        {/* DNS & Nameservers */}
+        <DomainDNSCard domain={{
+          id: domain.id,
+          domainName: domain.domainName,
+          provider: domain.provider,
+          expiresAt: domain.expiresAt.toISOString(),
+          createdAt: domain.createdAt.toISOString(),
+          nameservers: domain.nameservers,
+        }} />
 
         {/* Monitoring Settings */}
         <Card>

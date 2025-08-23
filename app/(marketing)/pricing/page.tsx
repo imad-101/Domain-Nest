@@ -93,12 +93,12 @@ export default function PricingPage() {
         <div className="text-center">
           <div className="mb-10 flex items-baseline justify-center gap-1">
             <span className="text-3xl text-gray-400">$</span>
-            <span className="text-8xl text-gray-900">49</span>
+            <span className="text-8xl text-gray-900">29</span>
             <span className="text-2xl text-gray-400">lifetime</span>
           </div>
 
           <Button size="lg" className="mb-6 rounded-xl bg-gray-900 px-10 py-4 text-lg text-white hover:bg-gray-800">
-            Get lifetime access for $49
+            Get lifetime access for $29
           </Button>
 
           <p className="text-gray-400">30 days money back guarantee</p>

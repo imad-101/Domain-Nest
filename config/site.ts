@@ -10,8 +10,8 @@ export const siteConfig: SiteConfig = {
   url: site_url,
   ogImage: `${site_url}/_static/og.jpg`,
   links: {
-    twitter: "https://twitter.com/domainnest",
-    github: "https://github.com/domainnest",
+    twitter: "https://x.com/imaduddin_101",
+    github: "https://github.com/imad-101",
   },
   mailSupport: "support@domnest.app",
 };
@@ -20,28 +20,17 @@ export const footerLinks: SidebarNavItem[] = [
   {
     title: "Company",
     items: [
-      { title: "About", href: "#" },
-      { title: "Enterprise", href: "#" },
+      { title: "About", href: "/about" },
       { title: "Terms", href: "/terms" },
       { title: "Privacy", href: "/privacy" },
     ],
   },
   {
-    title: "Product",
+    title: "Products",
     items: [
-      { title: "DNS Management", href: "#" },
-      { title: "SSL Monitoring", href: "#" },
-      { title: "Domain Transfer", href: "#" },
-      { title: "Uptime Monitoring", href: "#" },
-    ],
-  },
-  {
-    title: "Support",
-    items: [
-      { title: "Help Center", href: "#" },
-      { title: "API Reference", href: "#" },
-      { title: "Status Page", href: "#" },
-      { title: "Contact", href: "#" },
+      { title: "Domain Management", href: "/dashboard" },
+      { title: "SSL Monitoring", href: "/dashboard" },
+      { title: "Health Check", href: "/dashboard" },
     ],
   },
 ];

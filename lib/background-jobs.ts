@@ -78,8 +78,7 @@ export async function updateSSLStatuses(): Promise<JobResult[]> {
     where: {
       OR: [
         { lastSslCheck: { lt: staleThreshold } },
-        { lastSslCheck: null },
-        { sslStatus: null }
+        { lastSslCheck: null }
       ]
     }
   });
@@ -98,9 +97,6 @@ export async function updateSSLStatuses(): Promise<JobResult[]> {
       await prisma.domain.update({
         where: { id: domain.id },
         data: {
-          sslStatus: sslData.status,
-          sslExpiresAt: sslData.expiresAt,
-          sslIssuer: sslData.issuer,
           lastSslCheck: new Date(),
         }
       });
@@ -121,7 +117,6 @@ export async function updateSSLStatuses(): Promise<JobResult[]> {
       await prisma.domain.update({
         where: { id: domain.id },
         data: {
-          sslStatus: 'error',
           lastSslCheck: new Date(),
         }
       });
@@ -273,21 +268,8 @@ function calculateHealthScore(domain: any): number {
   let score = 0;
   let totalWeight = 0;
   
-  // SSL Health (30% weight)
-  const sslWeight = 30;
-  if (domain.sslStatus) {
-    let sslScore = 0;
-    switch (domain.sslStatus) {
-      case 'valid': sslScore = 100; break;
-      case 'warning': sslScore = 70; break;
-      case 'critical': sslScore = 40; break;
-      case 'expired': sslScore = 0; break;
-      case 'error': sslScore = 20; break;
-      default: sslScore = 50;
-    }
-    score += sslScore * sslWeight;
-    totalWeight += sslWeight;
-  }
+  // SSL Health (30% weight) - SSL data is fetched in real-time, not stored
+  // This section is skipped as SSL status is not persisted in the database
   
   // Uptime Health (70% weight)
   const uptimeWeight = 70;

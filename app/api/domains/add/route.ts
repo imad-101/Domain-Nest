@@ -11,57 +11,100 @@ const addDomainSchema = z.object({
 });
 
 async function fetchWhoisData(domainName: string) {
-  try {
-    // Try the free WHOIS API
-    const response = await fetch(`https://api.whois.vu/?q=${domainName}`, {
-      headers: {
-        'User-Agent': 'DomainManager/1.0',
-      },
-    });
-
-    if (!response.ok) {
-      throw new Error('WHOIS API request failed');
+  const whoisApis = [
+    {
+      name: 'whois.vu',
+      url: `https://api.whois.vu/?q=${domainName}`,
+      headers: { 'User-Agent': 'DomainManager/1.0' } as Record<string, string>,
+      timeout: 8000,
+      parseResponse: (data: any) => ({
+        registrar: data.registrar || data.registrar_name || 'Unknown',
+        expiryDate: parseWhoisDate(data.expires || data.registrar_registration_expiration_date),
+      })
+    },
+    {
+      name: 'whoisjsonapi',
+      url: `https://whoisjsonapi.com/v1/${domainName}`,
+      headers: { 'Accept': 'application/json' } as Record<string, string>,
+      timeout: 8000,
+      parseResponse: (data: any) => ({
+        registrar: data.registrar || 'Unknown',
+        expiryDate: parseWhoisDate(data.expires_date || data.expiry_date),
+      })
     }
+  ];
 
-    const data = await response.json();
-    console.log('WHOIS API response for', domainName, ':', data);
-    
-    // Extract registrar and expiry date from WHOIS data
-    const registrar = data.registrar || data.registrar_name || 'Unknown';
-    
-    // Handle different date formats
-    let expiryDate: Date | null = null;
-    if (data.expires) {
-      // If expires is a Unix timestamp (number)
-      if (typeof data.expires === 'number') {
-        expiryDate = new Date(data.expires * 1000);
-      } else {
-        // If expires is a string date
-        expiryDate = new Date(data.expires);
+  for (const api of whoisApis) {
+    try {
+      console.log(`Trying ${api.name} for domain:`, domainName);
+      
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), api.timeout);
+      
+      const response = await fetch(api.url, {
+        headers: api.headers,
+        signal: controller.signal,
+      });
+      
+      clearTimeout(timeoutId);
+
+      if (!response.ok) {
+        console.warn(`${api.name} API returned status:`, response.status);
+        continue;
       }
-    } else if (data.registrar_registration_expiration_date) {
-      expiryDate = new Date(data.registrar_registration_expiration_date);
+
+      const data = await response.json();
+      console.log(`${api.name} API response for`, domainName, ':', data);
+      
+      const result = api.parseResponse(data);
+      
+      if (result.registrar && result.registrar !== 'Unknown') {
+        console.log(`Successfully fetched WHOIS data from ${api.name}`);
+        return result;
+      }
+      
+    } catch (error: any) {
+      if (error.name === 'AbortError') {
+        console.warn(`${api.name} API timeout for domain:`, domainName);
+      } else {
+        console.warn(`${api.name} API error:`, error.message);
+      }
+      continue;
     }
-    
-    // Validate the date
-    if (expiryDate && isNaN(expiryDate.getTime())) {
-      console.warn('Invalid expiry date for', domainName, '- using fallback');
-      expiryDate = null;
-    }
-    
-    return {
-      registrar,
-      expiryDate: expiryDate || new Date(Date.now() + 365 * 24 * 60 * 60 * 1000), // 1 year from now as fallback
-    };
-  } catch (error) {
-    console.error('WHOIS API error:', error);
-    
-    // Fallback dummy values
-    return {
-      registrar: 'Unknown Registrar',
-      expiryDate: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000), // 1 year from now
-    };
   }
+  
+  console.log('All WHOIS APIs failed, using fallback values');
+  return {
+    registrar: 'Unknown Registrar',
+    expiryDate: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000), // 1 year from now
+  };
+}
+
+function parseWhoisDate(dateValue: any): Date {
+  if (!dateValue) {
+    return new Date(Date.now() + 365 * 24 * 60 * 60 * 1000); // 1 year from now as fallback
+  }
+  
+  let date: Date;
+  
+  if (typeof dateValue === 'number') {
+    // Unix timestamp
+    date = new Date(dateValue * 1000);
+  } else if (typeof dateValue === 'string') {
+    // String date
+    date = new Date(dateValue);
+  } else {
+    // Invalid format
+    return new Date(Date.now() + 365 * 24 * 60 * 60 * 1000);
+  }
+  
+  // Validate the date
+  if (isNaN(date.getTime())) {
+    console.warn('Invalid date parsed:', dateValue);
+    return new Date(Date.now() + 365 * 24 * 60 * 60 * 1000);
+  }
+  
+  return date;
 }
 
 export async function POST(request: NextRequest) {
@@ -96,26 +139,14 @@ export async function POST(request: NextRequest) {
     // Fetch WHOIS data
     const whoisData = await fetchWhoisData(validatedData.domainName);
 
-    // Check SSL certificate (optional, don't fail if SSL check fails)
-    let sslData: any = null;
-    try {
-      const { checkSSLCertificate } = await import("@/lib/ssl");
-      sslData = await checkSSLCertificate(validatedData.domainName);
-    } catch (error) {
-      console.warn("SSL check failed during domain addition:", error);
-    }
-
-    // Save to database
+    // Save to database (SSL data will be fetched in real-time)
     const domain = await prisma.domain.create({
       data: {
         userId: user.id,
         domainName: validatedData.domainName,
         provider: whoisData.registrar,
         expiresAt: whoisData.expiryDate || new Date(Date.now() + 365 * 24 * 60 * 60 * 1000),
-        sslExpiresAt: sslData?.expiryDate || null,
-        sslIssuer: sslData?.issuer || null,
-        sslStatus: sslData?.status || 'unknown',
-        lastSslCheck: sslData ? new Date() : null,
+        lastSslCheck: new Date(), // Mark as checked when domain is added
       },
     });
 

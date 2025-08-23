@@ -15,16 +15,8 @@ export const sidebarLinks: SidebarNavItem[] = [
         icon: "clock",
         title: "Health & Analytics",
       },
-      {
-        href: "/dashboard/data-management",
-        icon: "package",
-        title: "Data Management",
-      },
-      {
-        href: "/dashboard/billing",
-        icon: "billing",
-        title: "Billing",
-      },
+   
+   
       
      
     ],

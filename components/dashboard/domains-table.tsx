@@ -41,10 +41,15 @@ interface Domain {
   provider: string;
   expiresAt: string;
   createdAt: string;
-  sslExpiresAt?: string | null;
-  sslIssuer?: string | null;
-  sslStatus?: string | null;
   lastSslCheck?: string | null;
+}
+
+interface SSLData {
+  status: string;
+  issuer: string | null;
+  expiresAt: string | null;
+  isValid: boolean;
+  daysUntilExpiry: number | null;
 }
 
 interface DomainsTableProps {
@@ -54,7 +59,9 @@ interface DomainsTableProps {
 
 export function DomainsTable({ refreshTrigger, onDomainAdded }: DomainsTableProps) {
   const [domains, setDomains] = useState<Domain[]>([]);
+  const [sslData, setSslData] = useState<Record<string, SSLData>>({});
   const [loading, setLoading] = useState(true);
+  const [sslLoading, setSslLoading] = useState<Record<string, boolean>>({});
   const [searchTerm, setSearchTerm] = useState("");
   const [sortBy, setSortBy] = useState("name");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
@@ -64,6 +71,13 @@ export function DomainsTable({ refreshTrigger, onDomainAdded }: DomainsTableProp
   useEffect(() => {
     fetchDomains();
   }, [refreshTrigger]);
+
+  useEffect(() => {
+    // Fetch SSL data for all domains when domains are loaded
+    if (domains.length > 0) {
+      fetchAllSSLData();
+    }
+  }, [domains]);
 
   const fetchDomains = async () => {
     try {
@@ -77,6 +91,124 @@ export function DomainsTable({ refreshTrigger, onDomainAdded }: DomainsTableProp
     } finally {
       setLoading(false);
     }
+  };
+
+  const fetchSSLData = async (domainName: string) => {
+    setSslLoading(prev => ({ ...prev, [domainName]: true }));
+    try {
+      const response = await fetch("/api/domains/ssl-status", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ domainName }),
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        setSslData(prev => ({
+          ...prev,
+          [domainName]: data.ssl,
+        }));
+      }
+    } catch (error) {
+      console.error(`Failed to fetch SSL data for ${domainName}:`, error);
+      setSslData(prev => ({
+        ...prev,
+        [domainName]: {
+          status: 'error',
+          issuer: null,
+          expiresAt: null,
+          isValid: false,
+          daysUntilExpiry: null,
+        },
+      }));
+    } finally {
+      setSslLoading(prev => ({ ...prev, [domainName]: false }));
+    }
+  };
+
+  const fetchAllSSLData = async () => {
+    const domainNames = domains.map(d => d.domainName);
+    try {
+      const response = await fetch("/api/domains/ssl-status", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ domainNames }),
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        const newSslData: Record<string, SSLData> = {};
+        
+        Object.entries(data.results).forEach(([domainName, result]: [string, any]) => {
+          if (result.success) {
+            newSslData[domainName] = result.ssl;
+          } else {
+            newSslData[domainName] = {
+              status: 'error',
+              issuer: null,
+              expiresAt: null,
+              isValid: false,
+              daysUntilExpiry: null,
+            };
+          }
+        });
+        
+        setSslData(newSslData);
+      }
+    } catch (error) {
+      console.error("Failed to fetch bulk SSL data:", error);
+    }
+  };
+
+  const getSSLBadge = (domainName: string) => {
+    const ssl = sslData[domainName];
+    const isSSLLoading = sslLoading[domainName];
+
+    if (isSSLLoading) {
+      return {
+        variant: "secondary" as const,
+        text: "Checking...",
+        icon: <Icons.spinner className="size-3 animate-spin" />,
+      };
+    }
+
+    if (!ssl) {
+      return {
+        variant: "secondary" as const,
+        text: "Unknown",
+        icon: <Icons.shield className="size-3" />,
+      };
+    }
+
+    if (!ssl.isValid || ssl.status === 'error') {
+      return {
+        variant: "destructive" as const,
+        text: "Invalid",
+        icon: <Icons.shieldAlert className="size-3" />,
+      };
+    }
+
+    if (ssl.daysUntilExpiry !== null) {
+      if (ssl.daysUntilExpiry <= 7) {
+        return {
+          variant: "destructive" as const,
+          text: `${ssl.daysUntilExpiry}d left`,
+          icon: <Icons.shieldAlert className="size-3" />,
+        };
+      } else if (ssl.daysUntilExpiry <= 30) {
+        return {
+          variant: "destructive" as const,
+          text: `${ssl.daysUntilExpiry}d left`,
+          icon: <Icons.shieldAlert className="size-3" />,
+        };
+      }
+    }
+
+    return {
+      variant: "default" as const,
+      text: "Valid",
+      icon: <Icons.shieldCheck className="size-3" />,
+    };
   };
 
   const getDaysUntilExpiry = (expiresAt: string) => {
@@ -259,12 +391,16 @@ export function DomainsTable({ refreshTrigger, onDomainAdded }: DomainsTableProp
                       <ArrowUpDown className="ml-2 size-5" />
                     </Button>
                   </TableHead>
+                  <TableHead>
+                    <span className="text-base font-semibold text-foreground">SSL Status</span>
+                  </TableHead>
                   <TableHead className="w-16"></TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {sortedDomains.map((domain) => {
                   const expiryBadge = getExpiryBadge(domain.expiresAt);
+                  const sslBadge = getSSLBadge(domain.domainName);
                   const domainIcon = domain.domainName.charAt(0).toUpperCase();
                   
                   return (
@@ -288,7 +424,12 @@ export function DomainsTable({ refreshTrigger, onDomainAdded }: DomainsTableProp
                         </div>
                       </TableCell>
                       <TableCell className="py-4 text-base font-medium text-foreground">
-                        {domain.domainName}
+                        <Link 
+                          href={`/dashboard/domains/${domain.id}`}
+                          className="hover:text-primary transition-colors cursor-pointer font-medium"
+                        >
+                          {domain.domainName}
+                        </Link>
                       </TableCell>
                       <TableCell className="py-4 text-base text-foreground/70">
                         {domain.provider}
@@ -304,6 +445,14 @@ export function DomainsTable({ refreshTrigger, onDomainAdded }: DomainsTableProp
                           </span>
                           <Badge variant={expiryBadge.variant} className="px-3 py-1 text-sm font-medium">
                             {expiryBadge.text}
+                          </Badge>
+                        </div>
+                      </TableCell>
+                      <TableCell className="py-4">
+                        <div className="flex items-center gap-2">
+                          {sslBadge.icon}
+                          <Badge variant={sslBadge.variant} className="px-3 py-1 text-sm font-medium">
+                            {sslBadge.text}
                           </Badge>
                         </div>
                       </TableCell>
@@ -342,6 +491,7 @@ export function DomainsTable({ refreshTrigger, onDomainAdded }: DomainsTableProp
           <div className="md:hidden space-y-4">
             {sortedDomains.map((domain) => {
               const expiryBadge = getExpiryBadge(domain.expiresAt);
+              const sslBadge = getSSLBadge(domain.domainName);
               const domainIcon = domain.domainName.charAt(0).toUpperCase();
               
               return (
@@ -365,7 +515,14 @@ export function DomainsTable({ refreshTrigger, onDomainAdded }: DomainsTableProp
                         />
                       </div>
                       <div>
-                        <h3 className="text-base font-medium text-foreground">{domain.domainName}</h3>
+                        <Link 
+                          href={`/dashboard/domains/${domain.id}`}
+                          className="hover:text-primary transition-colors"
+                        >
+                          <h3 className="text-base font-medium text-foreground hover:text-primary transition-colors cursor-pointer">
+                            {domain.domainName}
+                          </h3>
+                        </Link>
                         <p className="text-sm text-foreground/70">{domain.provider}</p>
                       </div>
                     </div>
@@ -407,6 +564,18 @@ export function DomainsTable({ refreshTrigger, onDomainAdded }: DomainsTableProp
                     <Badge variant={expiryBadge.variant} className="px-3 py-1 text-sm font-medium">
                       {expiryBadge.text}
                     </Badge>
+                  </div>
+
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-xs text-foreground/70 font-medium uppercase tracking-wide">SSL Status</p>
+                      <div className="flex items-center gap-2 mt-1">
+                        {sslBadge.icon}
+                        <Badge variant={sslBadge.variant} className="px-3 py-1 text-sm font-medium">
+                          {sslBadge.text}
+                        </Badge>
+                      </div>
+                    </div>
                   </div>
                 </div>
               );

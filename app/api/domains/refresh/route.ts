@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getCurrentUser } from "@/lib/session";
-import { getWhoisData, getSSLStatus, performUptimeCheck, invalidateDomainCache } from "@/lib/domain-utils";
+import { getWhoisData, performUptimeCheck, invalidateDomainCache } from "@/lib/domain-utils";
 import { prisma } from "@/lib/db";
 import { z } from "zod";
 
 const refreshSchema = z.object({
   domainName: z.string().min(1).optional(),
-  dataTypes: z.array(z.enum(['whois', 'ssl', 'uptime', 'all'])).optional().default(['all']),
+  dataTypes: z.array(z.enum(['whois', 'uptime', 'all'])).optional().default(['all']),
   refreshAll: z.boolean().optional().default(false),
 });
 
@@ -71,37 +71,6 @@ export async function POST(request: NextRequest) {
           };
           hasError = true;
           errors.push(`WHOIS refresh failed for ${domain.domainName}`);
-        }
-      }
-
-      // Refresh SSL data
-      if (refreshAllData || dataTypes.includes('ssl')) {
-        try {
-          const sslData = await getSSLStatus(domain.domainName, true);
-          
-          // Update database with fresh SSL data
-          await prisma.domain.update({
-            where: { id: domain.id },
-            data: {
-              sslStatus: sslData.status,
-              sslExpiresAt: sslData.expiresAt,
-              sslIssuer: sslData.issuer,
-              lastSslCheck: new Date(),
-            }
-          });
-          
-          domainResults.ssl = {
-            success: true,
-            data: sslData,
-            timestamp: new Date().toISOString(),
-          };
-        } catch (error) {
-          domainResults.ssl = {
-            success: false,
-            error: error instanceof Error ? error.message : 'Unknown error',
-          };
-          hasError = true;
-          errors.push(`SSL refresh failed for ${domain.domainName}`);
         }
       }
 
