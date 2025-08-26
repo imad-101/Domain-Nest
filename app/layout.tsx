@@ -24,7 +24,11 @@ export default function RootLayout({ children }: RootLayoutProps) {
          
         )}
       >
-        <PlausibleProvider domain="domnest.app">
+        <PlausibleProvider 
+          domain={process.env.NEXT_PUBLIC_PLAUSIBLE_DOMAIN || "domnest.app"}
+          trackOutboundLinks
+          enabled={true}
+        >
           <SessionProvider>
             <ThemeProvider
               attribute="class"
