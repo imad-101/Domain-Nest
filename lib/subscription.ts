@@ -26,7 +26,18 @@ export async function getUserSubscriptionPlan(
   })
 
   if (!user) {
-    throw new Error("User not found")
+    // Instead of throwing an error, return a default free plan
+    console.warn(`User ${userId} not found in database, returning free plan`);
+    return {
+      ...pricingData[0], // Free plan
+      stripeSubscriptionId: null,
+      stripeCurrentPeriodEnd: null,
+      stripeCustomerId: null,
+      isPaid: false,
+      isSubscribed: false,
+      isCanceled: false,
+      interval: "month",
+    };
   }
 
   // Check if user has lifetime access (Lemon Squeezy or legacy Stripe)

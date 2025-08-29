@@ -41,53 +41,46 @@ model Session {
 }
 
 model User {
-  id                     String    @id @default(cuid())
-  name                   String?
-  email                  String?   @unique
-  emailVerified          DateTime?
-  image                  String?
-  createdAt              DateTime  @default(now()) @map("created_at")
-  updatedAt              DateTime  @default(now()) @map("updated_at")
-  stripeCustomerId       String?   @unique @map("stripe_customer_id")
-  stripeSubscriptionId   String?   @unique @map("stripe_subscription_id")
-  stripePriceId          String?   @map("stripe_price_id")
-  stripeCurrentPeriodEnd DateTime? @map("stripe_current_period_end")
-  lemonSqueezyCustomerId String?   @unique @map("lemonsqueezy_customer_id")
-  lemonSqueezySubscriptionId String? @unique @map("lemonsqueezy_subscription_id")
-  lemonSqueezyVariantId  String?   @map("lemonsqueezy_variant_id")
+  id                           String    @id @default(cuid())
+  name                         String?
+  email                        String?   @unique
+  emailVerified                DateTime?
+  image                        String?
+  createdAt                    DateTime  @default(now()) @map("created_at")
+  updatedAt                    DateTime  @default(now()) @map("updated_at")
+  stripeCustomerId             String?   @unique @map("stripe_customer_id")
+  stripeSubscriptionId         String?   @unique @map("stripe_subscription_id")
+  stripePriceId                String?   @map("stripe_price_id")
+  stripeCurrentPeriodEnd       DateTime? @map("stripe_current_period_end")
+  lemonSqueezyCustomerId       String?   @unique @map("lemonsqueezy_customer_id")
+  lemonSqueezySubscriptionId   String?   @unique @map("lemonsqueezy_subscription_id")
+  lemonSqueezyVariantId        String?   @map("lemonsqueezy_variant_id")
   lemonSqueezyCurrentPeriodEnd DateTime? @map("lemonsqueezy_current_period_end")
-  accounts               Account[]
-  domains                Domain[]
-  sessions               Session[]
+  accounts                     Account[]
+  domains                      Domain[]
+  sessions                     Session[]
 
   @@map("users")
 }
 
 model Domain {
-  id            String    @id @default(cuid())
-  userId        String
-  domainName    String
-  provider      String
-  expiresAt     DateTime
-  createdAt     DateTime  @default(now()) @map("created_at")
-  updatedAt     DateTime  @default(now()) @map("updated_at")
-  
-  // WHOIS data
-  registrar     String?   @map("registrar")
-  nameservers   String?   @map("nameservers") // JSON string of nameservers
-  
-  // SSL monitoring fields - real-time fetching
-  lastSslCheck  DateTime? @map("last_ssl_check")
-  
-  // Health monitoring fields
-  isMonitored   Boolean   @default(true) @map("is_monitored")
-  lastUptime    Float?    @map("last_uptime") // Percentage
-  healthScore   Float?    @map("health_score") // 0-100
-  lastHealthCheck DateTime? @map("last_health_check")
-  
-  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  uptimeChecks  UptimeCheck[]
+  id                 String              @id @default(cuid())
+  userId             String
+  domainName         String
+  provider           String
+  expiresAt          DateTime
+  createdAt          DateTime            @default(now()) @map("created_at")
+  updatedAt          DateTime            @default(now()) @map("updated_at")
+  registrar          String?             @map("registrar")
+  nameservers        String?             @map("nameservers")
+  lastSslCheck       DateTime?           @map("last_ssl_check")
+  isMonitored        Boolean             @default(true) @map("is_monitored")
+  lastUptime         Float?              @map("last_uptime")
+  healthScore        Float?              @map("health_score")
+  lastHealthCheck    DateTime?           @map("last_health_check")
+  user               User                @relation(fields: [userId], references: [id], onDelete: Cascade)
   performanceMetrics PerformanceMetric[]
+  uptimeChecks       UptimeCheck[]
 
   @@unique([userId, domainName])
   @@index([userId])
@@ -95,15 +88,14 @@ model Domain {
 }
 
 model UptimeCheck {
-  id          String   @id @default(cuid())
-  domainId    String   @map("domain_id")
-  timestamp   DateTime @default(now())
-  isUp        Boolean  @map("is_up")
-  responseTime Int?    @map("response_time") // in milliseconds
-  statusCode  Int?     @map("status_code")
-  errorMessage String? @map("error_message")
-  
-  domain      Domain   @relation(fields: [domainId], references: [id], onDelete: Cascade)
+  id           String   @id @default(cuid())
+  domainId     String   @map("domain_id")
+  timestamp    DateTime @default(now())
+  isUp         Boolean  @map("is_up")
+  responseTime Int?     @map("response_time")
+  statusCode   Int?     @map("status_code")
+  errorMessage String?  @map("error_message")
+  domain       Domain   @relation(fields: [domainId], references: [id], onDelete: Cascade)
 
   @@index([domainId, timestamp])
   @@map("uptime_checks")
@@ -113,13 +105,12 @@ model PerformanceMetric {
   id              String   @id @default(cuid())
   domainId        String   @map("domain_id")
   timestamp       DateTime @default(now())
-  responseTime    Int      @map("response_time") // in milliseconds
-  ttfb            Int?     @map("ttfb") // Time to first byte
+  responseTime    Int      @map("response_time")
+  ttfb            Int?     @map("ttfb")
   domainLookup    Int?     @map("domain_lookup")
   connect         Int?     @map("connect")
   tlsHandshake    Int?     @map("tls_handshake")
   contentTransfer Int?     @map("content_transfer")
-  
   domain          Domain   @relation(fields: [domainId], references: [id], onDelete: Cascade)
 
   @@index([domainId, timestamp])
