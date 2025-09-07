@@ -3,7 +3,6 @@ import Google from "next-auth/providers/google";
 import Resend from "next-auth/providers/resend";
 
 import { env } from "@/env.mjs";
-import { sendVerificationRequest } from "@/lib/email";
 import { getUserById } from "@/lib/user";
 
 export default {
@@ -13,11 +12,7 @@ export default {
       clientSecret: env.GOOGLE_CLIENT_SECRET,
       allowDangerousEmailAccountLinking: true,
     }),
-    Resend({
-      apiKey: env.RESEND_API_KEY,
-      from: env.EMAIL_FROM,
-      sendVerificationRequest,
-    }),
+    
   ],
   pages: {
     signIn: "/login",

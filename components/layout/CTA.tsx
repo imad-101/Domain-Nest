@@ -7,7 +7,10 @@ export default function CallToActionSection() {
         {/* Massive Domnest background text */}
         <div className="absolute inset-0 flex items-end justify-center pb-8 md:mt-96 md:pb-0 md:items-center">
           <span className="text-[6rem] md:text-[12rem] lg:text-[12rem] xl:text-[18rem]  text-white leading-none opacity-10 md:opacity-100">
-            Domnest
+            Dom
+          </span>
+           <span className="text-[6rem] md:text-[12rem] lg:text-[12rem] xl:text-[18rem]  text-orange-600 text-shadow-outline leading-none opacity-10 md:opacity-100">
+            Nest
           </span>
         </div>
 
