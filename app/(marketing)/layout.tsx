@@ -1,7 +1,7 @@
 import { NavBar } from "@/components/layout/navbar";
-import { SiteFooter } from "@/components/layout/site-footer";
-import { NavMobile } from "@/components/layout/mobile-nav";
 
+import { NavMobile } from "@/components/layout/mobile-nav";
+import CallToActionSection from "@/components/layout/CTA";
 interface MarketingLayoutProps {
   children: React.ReactNode;
 }
@@ -12,7 +12,8 @@ export default function MarketingLayout({ children }: MarketingLayoutProps) {
       <NavMobile />
       <NavBar scroll={true} />
       <main className="flex-1">{children}</main>
-      <SiteFooter />
+ 
+      <CallToActionSection />
     </div>
   );
 }
