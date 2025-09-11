@@ -41,7 +41,7 @@ interface Domain {
   provider: string;
   expiresAt: string;
   createdAt: string;
-  lastSslCheck?: string | null;
+  registrar?: string;
 }
 
 interface SSLData {

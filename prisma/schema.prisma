@@ -64,57 +64,19 @@ model User {
 }
 
 model Domain {
-  id                 String              @id @default(cuid())
-  userId             String
-  domainName         String
-  provider           String
-  expiresAt          DateTime
-  createdAt          DateTime            @default(now()) @map("created_at")
-  updatedAt          DateTime            @default(now()) @map("updated_at")
-  registrar          String?             @map("registrar")
-  nameservers        String?             @map("nameservers")
-  lastSslCheck       DateTime?           @map("last_ssl_check")
-  isMonitored        Boolean             @default(true) @map("is_monitored")
-  lastUptime         Float?              @map("last_uptime")
-  healthScore        Float?              @map("health_score")
-  lastHealthCheck    DateTime?           @map("last_health_check")
-  user               User                @relation(fields: [userId], references: [id], onDelete: Cascade)
-  performanceMetrics PerformanceMetric[]
-  uptimeChecks       UptimeCheck[]
+  id         String   @id @default(cuid())
+  userId     String
+  domainName String
+  provider   String
+  expiresAt  DateTime
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @default(now()) @map("updated_at")
+  registrar  String?  @map("registrar")
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([userId, domainName])
   @@index([userId])
   @@map("domains")
-}
-
-model UptimeCheck {
-  id           String   @id @default(cuid())
-  domainId     String   @map("domain_id")
-  timestamp    DateTime @default(now())
-  isUp         Boolean  @map("is_up")
-  responseTime Int?     @map("response_time")
-  statusCode   Int?     @map("status_code")
-  errorMessage String?  @map("error_message")
-  domain       Domain   @relation(fields: [domainId], references: [id], onDelete: Cascade)
-
-  @@index([domainId, timestamp])
-  @@map("uptime_checks")
-}
-
-model PerformanceMetric {
-  id              String   @id @default(cuid())
-  domainId        String   @map("domain_id")
-  timestamp       DateTime @default(now())
-  responseTime    Int      @map("response_time")
-  ttfb            Int?     @map("ttfb")
-  domainLookup    Int?     @map("domain_lookup")
-  connect         Int?     @map("connect")
-  tlsHandshake    Int?     @map("tls_handshake")
-  contentTransfer Int?     @map("content_transfer")
-  domain          Domain   @relation(fields: [domainId], references: [id], onDelete: Cascade)
-
-  @@index([domainId, timestamp])
-  @@map("performance_metrics")
 }
 
 model VerificationToken {

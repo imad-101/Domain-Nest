@@ -139,14 +139,14 @@ export async function POST(request: NextRequest) {
     // Fetch WHOIS data
     const whoisData = await fetchWhoisData(validatedData.domainName);
 
-    // Save to database (SSL data will be fetched in real-time)
+    // Save to database (all monitoring data will be fetched in real-time)
     const domain = await prisma.domain.create({
       data: {
         userId: user.id,
         domainName: validatedData.domainName,
         provider: whoisData.registrar,
         expiresAt: whoisData.expiryDate || new Date(Date.now() + 365 * 24 * 60 * 60 * 1000),
-        lastSslCheck: new Date(), // Mark as checked when domain is added
+        registrar: whoisData.registrar,
       },
     });
 

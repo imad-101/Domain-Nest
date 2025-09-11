@@ -41,7 +41,7 @@ export function NavBar({ scroll = false }: NavBarProps) {
         >
         <div className="flex gap-6 md:gap-10">
           <Link href="/" className="flex items-center">
-       <h1 className="text-2xl font-bold">Dom <span className="text-orange-600">Nest</span></h1>
+       <h1 className="text-3xl font-extrabold">Dom <span className="text-orange-600">Nest</span></h1>
           </Link>
 
           {links && links.length > 0 ? (

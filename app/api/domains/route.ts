@@ -27,9 +27,10 @@ export async function GET(request: NextRequest) {
         id: domain.id,
         domainName: domain.domainName,
         provider: domain.provider,
+        registrar: domain.registrar,
         expiresAt: domain.expiresAt,
         createdAt: domain.createdAt,
-        lastSslCheck: domain.lastSslCheck,
+        updatedAt: domain.updatedAt,
       })),
     });
 

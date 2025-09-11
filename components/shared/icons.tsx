@@ -1,10 +1,13 @@
 import {
+  Activity,
   AlertTriangle,
   ArrowLeft,
   ArrowRight,
   ArrowUpRight,
+  Bell,
   BookOpen,
   Check,
+  CheckCircle,
   ChevronLeft,
   ChevronRight,
   Clock,
@@ -12,6 +15,7 @@ import {
   CreditCard,
   File,
   FileText,
+  Globe,
   HelpCircle,
   Home,
   Image,
@@ -31,6 +35,7 @@ import {
   Puzzle,
   RotateCcw,
   Search,
+  Server,
   Settings,
   Shield,
   ShieldAlert,
@@ -39,18 +44,23 @@ import {
   Trash,
   User,
   X,
+  XCircle,
   Zap,
 } from "lucide-react";
 
 export type Icon = LucideIcon;
 
 export const Icons = {
+  activity: Activity,
   add: Plus,
+  alertTriangle: AlertTriangle,
   arrowLeft: ArrowLeft,
   arrowRight: ArrowRight,
   arrowUpRight: ArrowUpRight,
+  bell: Bell,
   billing: CreditCard,
   bookOpen: BookOpen,
+  checkCircle: CheckCircle,
   chevronLeft: ChevronLeft,
   chevronRight: ChevronRight,
   check: Check,
@@ -125,6 +135,7 @@ export const Icons = {
   post: FileText,
   refresh: RotateCcw,
   search: Search,
+  server: Server,
   settings: Settings,
   shield: Shield,
   shieldAlert: ShieldAlert,
@@ -132,6 +143,8 @@ export const Icons = {
   spinner: Loader2,
   sun: SunMedium,
   trash: Trash,
+  globe: Globe,
+  alertTriangle: AlertTriangle,
   twitter: ({ ...props }: LucideProps) => (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -152,5 +165,6 @@ export const Icons = {
   user: User,
   warning: AlertTriangle,
   x: X,
+  xCircle: XCircle,
   zap: Zap,
 };

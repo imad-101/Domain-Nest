@@ -2,6 +2,47 @@ import { NextRequest, NextResponse } from "next/server";
 import { getCurrentUser } from "@/lib/session";
 import { prisma } from "@/lib/db";
 
+export async function GET(
+  request: NextRequest,
+  { params }: { params: { id: string } }
+) {
+  try {
+    const user = await getCurrentUser();
+    
+    if (!user?.id) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    const domain = await prisma.domain.findFirst({
+      where: {
+        id: params.id,
+        userId: user.id,
+      },
+    });
+
+    if (!domain) {
+      return NextResponse.json({ error: 'Domain not found' }, { status: 404 });
+    }
+
+    return NextResponse.json({ 
+      domain: {
+        id: domain.id,
+        domainName: domain.domainName,
+        provider: domain.provider,
+        expiresAt: domain.expiresAt.toISOString(),
+        createdAt: domain.createdAt.toISOString(),
+        registrar: domain.registrar,
+      }
+    });
+  } catch (error) {
+    console.error('Error fetching domain:', error);
+    return NextResponse.json(
+      { error: 'Failed to fetch domain' },
+      { status: 500 }
+    );
+  }
+}
+
 export async function DELETE(
   request: NextRequest,
   { params }: { params: { id: string } }
