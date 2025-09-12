@@ -6,7 +6,7 @@ import { cn, constructMetadata } from "@/lib/utils";
 import { Toaster } from "@/components/ui/sonner";
 import ModalProvider from "@/components/modals/providers";
 import { TailwindIndicator } from "@/components/tailwind-indicator";
-import PlausibleProvider from "next-plausible";
+import Script from "next/script";
 
 interface RootLayoutProps {
   children: React.ReactNode;
@@ -24,11 +24,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
          
         )}
       >
-        <PlausibleProvider 
-          domain={process.env.NEXT_PUBLIC_PLAUSIBLE_DOMAIN || "domnest.app"}
-          trackOutboundLinks
-          enabled={true}
-        >
+    
           <SessionProvider>
             <ThemeProvider
               attribute="class"
@@ -45,7 +41,26 @@ export default function RootLayout({ children }: RootLayoutProps) {
               <TailwindIndicator />
             </ThemeProvider>
           </SessionProvider>
-        </PlausibleProvider>
+
+        {/* Plausible Analytics */}
+        <Script
+          defer
+          data-domain="domnest.app"
+          src="https://plausible.imaduddin.me/js/script.js"
+          strategy="afterInteractive"
+        />
+        <Script
+          id="plausible-init"
+          strategy="afterInteractive"
+          dangerouslySetInnerHTML={{
+            __html: `
+              window.plausible = window.plausible || function() { 
+                (window.plausible.q = window.plausible.q || []).push(arguments) 
+              }
+            `,
+          }}
+        />
+    
       </body>
     </html>
   );
